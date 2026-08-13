@@ -74,7 +74,7 @@ function Diario() {
   return (
     <AppShell>
       <header className="px-5 pt-8">
-        <p className="text-sm text-muted-foreground capitalize">{dateLabel}</p>
+        <p className="text-sm text-muted-foreground first-letter:uppercase">{dateLabel}</p>
         <h1 className="font-display mt-1 text-2xl font-bold">
           {greeting()}, {profile.name}
         </h1>
