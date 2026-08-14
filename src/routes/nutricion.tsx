@@ -27,12 +27,6 @@ export const Route = createFileRoute("/nutricion")({
 });
 
 const DAY_LABELS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-const MEAL_ICONS = {
-  desayuno: Sunrise,
-  almuerzo: Sun,
-  snack: Zap,
-  cena: Moon,
-} as const;
 
 function weekDays() {
   const today = new Date();
@@ -154,63 +148,107 @@ function NutricionPage() {
         </div>
       </section>
 
-      <section className="mt-6 px-5">
-        <div className="flex items-baseline justify-between">
-          <h2 className="font-display text-lg font-semibold">Comidas</h2>
-          <span className="text-sm text-muted-foreground">{mealsDone}/4 completas</span>
+      <section className="mt-6">
+        <div className="flex items-baseline justify-between px-5">
+          <h2 className="font-display text-lg font-semibold">Tipos de alimentos</h2>
+          {typeFilter && (
+            <button
+              onClick={() => setTypeFilter(null)}
+              className="text-sm font-medium text-primary"
+            >
+              Ver todos
+            </button>
+          )}
         </div>
-        <div className="mt-3 space-y-2.5">
-          {MEAL_TEMPLATES.map((meal) => {
-            const done = day.meals[meal.key];
-            const Icon = MEAL_ICONS[meal.key as keyof typeof MEAL_ICONS] ?? Sun;
+        <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {FOOD_TYPES.map((t) => {
+            const active = typeFilter === t.key;
             return (
               <button
-                key={meal.key}
-                onClick={() => update({ meals: { ...day.meals, [meal.key]: !done } })}
-                aria-pressed={done}
-                className="flex w-full items-center gap-3 rounded-3xl bg-card p-4 text-left shadow-[0_12px_38px_-30px_rgba(0,0,0,0.7)]"
+                key={t.key}
+                onClick={() => setTypeFilter(active ? null : t.key)}
+                className="w-[116px] shrink-0 text-left"
               >
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
-                  <Icon size={20} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-display font-semibold">{meal.label}</p>
-                  <p className="truncate text-sm text-muted-foreground">{meal.items[0]}</p>
-                  <p className="mt-0.5 text-sm font-medium">
-                    {Math.round(meal.share * plan.calories)}{" "}
-                    <span className="text-muted-foreground">kcal</span>
-                  </p>
-                </div>
-                <span
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors ${
-                    done
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border text-muted-foreground"
+                <img
+                  src={t.image}
+                  alt={t.label}
+                  loading="lazy"
+                  width={512}
+                  height={512}
+                  className={`h-[86px] w-full rounded-2xl object-cover transition-all ${
+                    active ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""
+                  }`}
+                />
+                <p
+                  className={`mt-2 rounded-xl px-2 py-1 text-center text-sm font-medium ${
+                    active ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
                   }`}
                 >
-                  <Check size={15} />
-                </span>
+                  {t.label}
+                </p>
               </button>
             );
           })}
         </div>
       </section>
 
-      <section className="mt-6 px-5">
-        <h2 className="font-display text-lg font-semibold">Alimentos clave</h2>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          {KEY_FOODS.map((f) => (
-            <div
-              key={f.name}
-              className="rounded-2xl bg-card p-3.5 shadow-[0_10px_36px_-30px_rgba(0,0,0,0.6)]"
+      <section className="mt-6">
+        <h2 className="px-5 font-display text-lg font-semibold">Categorías inteligentes</h2>
+        <div className="mt-3 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {[{ key: "todos" as const, label: "Ver todo" }, ...MEAL_TABS].map((t) => {
+            const active = mealTab === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setMealTab(t.key)}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground shadow-[0_10px_30px_-26px_rgba(0,0,0,0.7)]"
+                }`}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3 px-5">
+          {RECIPES.filter(
+            (r) =>
+              (mealTab === "todos" || r.meal === mealTab) &&
+              (!typeFilter || r.type === typeFilter),
+          ).map((r) => (
+            <button
+              key={r.key}
+              onClick={() => setOpenRecipe(r)}
+              className="overflow-hidden rounded-3xl bg-card text-left shadow-[0_14px_40px_-30px_rgba(0,0,0,0.7)]"
             >
-              <p className="text-xl">{f.emoji}</p>
-              <p className="mt-1 font-medium">{f.name}</p>
-              <p className="text-xs text-muted-foreground">{f.detail}</p>
-            </div>
+              <div className="relative">
+                <img
+                  src={r.image}
+                  alt={r.name}
+                  loading="lazy"
+                  width={768}
+                  height={576}
+                  className="h-[104px] w-full object-cover"
+                />
+                <span className="absolute left-2 top-2 rounded-lg bg-card/90 px-2 py-0.5 text-xs font-medium">
+                  {r.tag}
+                </span>
+              </div>
+              <div className="p-3">
+                <p className="font-display font-semibold leading-tight">{r.name}</p>
+                <p className="truncate text-xs text-muted-foreground">{r.subtitle}</p>
+                <p className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock size={12} /> {r.minutes} min · {r.kcal} kcal
+                </p>
+              </div>
+            </button>
           ))}
         </div>
       </section>
+
 
       <section className="mt-6 px-5">
         <h2 className="font-display text-lg font-semibold">Hidratación</h2>
