@@ -100,8 +100,8 @@ function InformePage() {
     }
   };
 
-  const current = series.length ? series[series.length - 1].kg : (profile?.weight ?? 0);
-  const start = series.length ? series[0].kg : (profile?.weight ?? 0);
+  const current = series.at(-1)?.kg ?? profile?.weight ?? 0;
+  const start = series[0]?.kg ?? profile?.weight ?? 0;
   const diff = current - start;
   const target = profile?.targetWeight ?? current;
   const goalPct =
