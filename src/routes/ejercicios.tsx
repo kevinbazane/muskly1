@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ChevronDown, Clock, Dumbbell, Home, Repeat, Timer } from "lucide-react";
-import { AppShell, ScreenHeader } from "@/components/AppShell";
+import { Dumbbell, Flame, Heart, Home, LayoutList, MoreVertical, Play, Timer } from "lucide-react";
+import { AppShell } from "@/components/AppShell";
 import { useProfile } from "@/hooks/useMuskly";
 import { ROUTINES, type Place } from "@/lib/muskly-content";
+import heroImg from "@/assets/workout-hero.jpg";
 
 export const Route = createFileRoute("/ejercicios")({
   head: () => ({
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/ejercicios")({
         property: "og:description",
         content: "Rutinas en casa o gimnasio con series, repeticiones y descansos guiados.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: EjerciciosPage,
@@ -26,33 +29,65 @@ export const Route = createFileRoute("/ejercicios")({
 function EjerciciosPage() {
   const { profile } = useProfile();
   const [place, setPlace] = useState<Place>("gimnasio");
-  const [openDay, setOpenDay] = useState(0);
+  const [dayIndex, setDayIndex] = useState(0);
+  const [fav, setFav] = useState(false);
 
   const workouts = ROUTINES[place];
-  const totalExercises = useMemo(
-    () => workouts.reduce((sum, w) => sum + w.exercises.length, 0),
-    [workouts],
-  );
+  const workout = workouts[Math.min(dayIndex, workouts.length - 1)]!;
+
+  const kcal = useMemo(() => workout.exercises.length * 55 + 60, [workout]);
 
   return (
     <AppShell>
-      <ScreenHeader
-        title="Ejercicios"
-        subtitle={
-          profile
-            ? `Plan ${profile.level} · ${profile.daysPerWeek} días por semana`
-            : "Tu rutina semanal guiada"
-        }
-      />
+      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-5 pt-8 pb-4">
+        <span className="grid h-10 w-10 place-items-center rounded-2xl bg-card text-primary shadow-[0_10px_30px_-22px_rgba(0,0,0,0.8)]">
+          <Dumbbell size={18} />
+        </span>
+        <h1 className="text-center font-display text-lg font-bold">Entrenamiento</h1>
+        <button
+          onClick={() => setFav((f) => !f)}
+          aria-label="Guardar rutina"
+          className="grid h-10 w-10 place-items-center rounded-2xl bg-card text-muted-foreground shadow-[0_10px_30px_-22px_rgba(0,0,0,0.8)]"
+        >
+          <Heart size={18} className={fav ? "fill-primary text-primary" : ""} />
+        </button>
+      </header>
 
-      <div className="px-5">
+      {/* Hero */}
+      <section className="px-5">
+        <div className="relative overflow-hidden rounded-3xl">
+          <img
+            src={heroImg}
+            alt="Persona entrenando con mancuerna en el gimnasio"
+            width={1024}
+            height={576}
+            className="h-56 w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/70 to-transparent" />
+          <div className="absolute inset-0 flex flex-col justify-center gap-3 p-5">
+            <h2 className="max-w-[62%] font-display text-2xl leading-tight font-bold text-background">
+              {workout.focus.split("·")[0]?.trim()}
+            </h2>
+            <p className="text-sm text-background/80">
+              {workout.exercises.length} ejercicios · {workout.duration}
+            </p>
+            <button className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--color-primary)] transition-transform active:scale-95">
+              Empezar rutina
+              <Play size={14} className="fill-current" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Lugar */}
+      <section className="mt-5 px-5">
         <div className="grid grid-cols-2 gap-2 rounded-2xl bg-muted p-1">
           {(["gimnasio", "casa"] as Place[]).map((p) => (
             <button
               key={p}
               onClick={() => {
                 setPlace(p);
-                setOpenDay(0);
+                setDayIndex(0);
               }}
               className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium capitalize transition-colors ${
                 place === p ? "bg-card text-primary shadow-sm" : "text-muted-foreground"
@@ -63,71 +98,73 @@ function EjerciciosPage() {
             </button>
           ))}
         </div>
-      </div>
 
-      <section className="mt-4 grid grid-cols-3 gap-3 px-5">
-        <MiniStat label="Sesiones" value={`${workouts.length}`} />
-        <MiniStat label="Ejercicios" value={`${totalExercises}`} />
-        <MiniStat label="Descanso" value="48 h" />
+        <div className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-1">
+          {workouts.map((w, i) => (
+            <button
+              key={w.day}
+              onClick={() => setDayIndex(i)}
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                i === dayIndex
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card text-muted-foreground shadow-[0_10px_30px_-26px_rgba(0,0,0,0.8)]"
+              }`}
+            >
+              {w.day}
+            </button>
+          ))}
+        </div>
       </section>
 
-      <section className="mt-6 space-y-3 px-5">
-        <h2 className="font-display text-lg font-semibold">Tu semana</h2>
-        {workouts.map((w, i) => {
-          const open = openDay === i;
-          return (
-            <article
-              key={w.day}
-              className="overflow-hidden rounded-3xl bg-card shadow-[0_12px_40px_-28px_rgba(0,0,0,0.6)]"
+      {/* Sobre la rutina */}
+      <section className="mt-6 px-5">
+        <h3 className="font-display text-lg font-semibold">Sobre esta rutina</h3>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          {workout.focus}. Trabajo enfocado con progresión de cargas para ganar masa muscular
+          {profile ? ` a tu nivel ${profile.level}` : ""}.
+        </p>
+
+        <div className="mt-4 grid grid-cols-3 gap-2 rounded-3xl bg-card p-4 shadow-[0_16px_44px_-32px_rgba(0,0,0,0.8)]">
+          <Stat icon={<Timer size={16} />} value={workout.duration} label="Duración" />
+          <Stat
+            icon={<LayoutList size={16} />}
+            value={`${workout.exercises.length}`}
+            label="Ejercicios"
+          />
+          <Stat icon={<Flame size={16} />} value={`${kcal} kcal`} label="Gasto aprox." />
+        </div>
+      </section>
+
+      {/* Ejercicios */}
+      <section className="mt-6 px-5">
+        <h3 className="font-display text-lg font-semibold">Ejercicios</h3>
+        <div className="mt-3 space-y-2.5">
+          {workout.exercises.map((ex) => (
+            <details
+              key={ex.name}
+              className="group overflow-hidden rounded-3xl bg-card shadow-[0_16px_44px_-34px_rgba(0,0,0,0.8)]"
             >
-              <button
-                onClick={() => setOpenDay(open ? -1 : i)}
-                aria-expanded={open}
-                className="flex w-full items-center gap-3 p-4 text-left"
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
-                  <Dumbbell size={18} />
+              <summary className="flex list-none items-center gap-3 p-2.5 [&::-webkit-details-marker]:hidden">
+                <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+                  <Dumbbell size={20} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-display font-semibold">{w.day}</span>
-                  <span className="block truncate text-sm text-muted-foreground">{w.focus}</span>
+                  <span className="block truncate font-semibold">{ex.name}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {ex.sets} series × {ex.reps} reps · {ex.muscle}
+                  </span>
                 </span>
-                <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
-                  <Clock size={13} />
-                  {w.duration}
+                <span className="shrink-0 rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-accent-foreground">
+                  {ex.rest}
                 </span>
-                <ChevronDown
-                  size={18}
-                  className={`shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
-                />
-              </button>
-
-              {open ? (
-                <div className="animate-fade-in space-y-2 border-t border-border px-4 pt-3 pb-4">
-                  {w.exercises.map((ex) => (
-                    <div key={ex.name} className="rounded-2xl bg-muted/60 p-3.5">
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="font-medium">{ex.name}</p>
-                        <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                          {ex.muscle}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Repeat size={12} /> {ex.sets} × {ex.reps}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Timer size={12} /> {ex.rest}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{ex.cue}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-            </article>
-          );
-        })}
+                <MoreVertical size={16} className="shrink-0 text-muted-foreground" />
+              </summary>
+              <p className="border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+                {ex.cue}
+              </p>
+            </details>
+          ))}
+        </div>
       </section>
 
       <section className="mt-6 px-5">
@@ -143,11 +180,22 @@ function EjerciciosPage() {
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: string }) {
+function Stat({
+  icon,
+  value,
+  label,
+}: {
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+}) {
   return (
-    <div className="rounded-2xl bg-card p-3 text-center shadow-[0_12px_40px_-30px_rgba(0,0,0,0.6)]">
-      <p className="font-display text-lg font-bold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+    <div className="flex flex-col items-center gap-1 text-center">
+      <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary">
+        {icon}
+      </span>
+      <p className="font-display text-sm font-bold">{value}</p>
+      <p className="text-[11px] text-muted-foreground">{label}</p>
     </div>
   );
 }
