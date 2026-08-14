@@ -73,7 +73,13 @@ function EjerciciosPage() {
             <p className="text-sm text-background/80">
               {workout.exercises.length} ejercicios · {workout.duration}
             </p>
-            <button className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--color-primary)] transition-transform active:scale-95">
+            <button
+              onClick={() =>
+                navigate({ to: "/entrenar", search: { place, day: dayIndex, i: 0 } })
+              }
+              className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--color-primary)] transition-transform active:scale-95"
+            >
+
               Empezar rutina
               <Play size={14} className="fill-current" />
             </button>
