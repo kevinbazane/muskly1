@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Dumbbell, Flame, Heart, Home, LayoutList, MoreVertical, Play, Timer } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -28,6 +28,8 @@ export const Route = createFileRoute("/ejercicios")({
 
 function EjerciciosPage() {
   const { profile } = useProfile();
+  const navigate = useNavigate();
+
   const [place, setPlace] = useState<Place>("gimnasio");
   const [dayIndex, setDayIndex] = useState(0);
   const [fav, setFav] = useState(false);
