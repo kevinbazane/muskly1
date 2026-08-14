@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Dumbbell, Flame, Heart, Home, LayoutList, MoreVertical, Play, Timer } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -28,6 +28,8 @@ export const Route = createFileRoute("/ejercicios")({
 
 function EjerciciosPage() {
   const { profile } = useProfile();
+  const navigate = useNavigate();
+
   const [place, setPlace] = useState<Place>("gimnasio");
   const [dayIndex, setDayIndex] = useState(0);
   const [fav, setFav] = useState(false);
@@ -71,7 +73,13 @@ function EjerciciosPage() {
             <p className="text-sm text-background/80">
               {workout.exercises.length} ejercicios · {workout.duration}
             </p>
-            <button className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--color-primary)] transition-transform active:scale-95">
+            <button
+              onClick={() =>
+                navigate({ to: "/entrenar", search: { place, day: dayIndex, i: 0 } })
+              }
+              className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--color-primary)] transition-transform active:scale-95"
+            >
+
               Empezar rutina
               <Play size={14} className="fill-current" />
             </button>
@@ -139,32 +147,30 @@ function EjerciciosPage() {
       <section className="mt-6 px-5">
         <h3 className="font-display text-lg font-semibold">Ejercicios</h3>
         <div className="mt-3 space-y-2.5">
-          {workout.exercises.map((ex) => (
-            <details
+          {workout.exercises.map((ex, i) => (
+            <Link
               key={ex.name}
-              className="group overflow-hidden rounded-3xl bg-card shadow-[0_16px_44px_-34px_rgba(0,0,0,0.8)]"
+              to="/entrenar"
+              search={{ place, day: dayIndex, i }}
+              className="flex items-center gap-3 rounded-3xl bg-card p-2.5 shadow-[0_16px_44px_-34px_rgba(0,0,0,0.8)] transition-transform active:scale-[0.99]"
             >
-              <summary className="flex list-none items-center gap-3 p-2.5 [&::-webkit-details-marker]:hidden">
-                <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
-                  <Dumbbell size={20} />
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+                <Dumbbell size={20} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold">{ex.name}</span>
+                <span className="block text-xs text-muted-foreground">
+                  {ex.sets} series × {ex.reps} reps · {ex.muscle}
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-semibold">{ex.name}</span>
-                  <span className="block text-xs text-muted-foreground">
-                    {ex.sets} series × {ex.reps} reps · {ex.muscle}
-                  </span>
-                </span>
-                <span className="shrink-0 rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-accent-foreground">
-                  {ex.rest}
-                </span>
-                <MoreVertical size={16} className="shrink-0 text-muted-foreground" />
-              </summary>
-              <p className="border-t border-border px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-                {ex.cue}
-              </p>
-            </details>
+              </span>
+              <span className="shrink-0 rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-accent-foreground">
+                {ex.rest}
+              </span>
+              <Play size={16} className="shrink-0 fill-current text-primary" />
+            </Link>
           ))}
         </div>
+
       </section>
 
       <section className="mt-6 px-5">

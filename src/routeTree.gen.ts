@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EjerciciosRouteImport } from './routes/ejercicios'
+import { Route as EntrenarRouteImport } from './routes/entrenar'
 import { Route as InformeRouteImport } from './routes/informe'
 import { Route as NutricionRouteImport } from './routes/nutricion'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const EjerciciosRoute = EjerciciosRouteImport.update({
   id: '/ejercicios',
   path: '/ejercicios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrenarRoute = EntrenarRouteImport.update({
+  id: '/entrenar',
+  path: '/entrenar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InformeRoute = InformeRouteImport.update({
@@ -50,6 +56,7 @@ const PerfilRoute = PerfilRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ejercicios': typeof EjerciciosRoute
+  '/entrenar': typeof EntrenarRoute
   '/informe': typeof InformeRoute
   '/nutricion': typeof NutricionRoute
   '/onboarding': typeof OnboardingRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ejercicios': typeof EjerciciosRoute
+  '/entrenar': typeof EntrenarRoute
   '/informe': typeof InformeRoute
   '/nutricion': typeof NutricionRoute
   '/onboarding': typeof OnboardingRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ejercicios': typeof EjerciciosRoute
+  '/entrenar': typeof EntrenarRoute
   '/informe': typeof InformeRoute
   '/nutricion': typeof NutricionRoute
   '/onboarding': typeof OnboardingRoute
@@ -75,14 +84,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/ejercicios' | '/informe' | '/nutricion' | '/onboarding' | '/perfil'
+    | '/'
+    | '/ejercicios'
+    | '/entrenar'
+    | '/informe'
+    | '/nutricion'
+    | '/onboarding'
+    | '/perfil'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/ejercicios' | '/informe' | '/nutricion' | '/onboarding' | '/perfil'
+    | '/'
+    | '/ejercicios'
+    | '/entrenar'
+    | '/informe'
+    | '/nutricion'
+    | '/onboarding'
+    | '/perfil'
   id:
     | '__root__'
     | '/'
     | '/ejercicios'
+    | '/entrenar'
     | '/informe'
     | '/nutricion'
     | '/onboarding'
@@ -92,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EjerciciosRoute: typeof EjerciciosRoute
+  EntrenarRoute: typeof EntrenarRoute
   InformeRoute: typeof InformeRoute
   NutricionRoute: typeof NutricionRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -112,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/ejercicios'
       fullPath: '/ejercicios'
       preLoaderRoute: typeof EjerciciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entrenar': {
+      id: '/entrenar'
+      path: '/entrenar'
+      fullPath: '/entrenar'
+      preLoaderRoute: typeof EntrenarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/informe': {
@@ -148,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EjerciciosRoute: EjerciciosRoute,
+  EntrenarRoute: EntrenarRoute,
   InformeRoute: InformeRoute,
   NutricionRoute: NutricionRoute,
   OnboardingRoute: OnboardingRoute,
