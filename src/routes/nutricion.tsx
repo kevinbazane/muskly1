@@ -380,3 +380,12 @@ function MacroRow({ label, value }: { label: string; value: string }) {
     </li>
   );
 }
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-card py-3 shadow-[0_10px_30px_-28px_rgba(0,0,0,0.7)]">
+      <p className="font-display text-base font-bold">{value}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
+    </div>
+  );
+}
