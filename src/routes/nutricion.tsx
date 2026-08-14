@@ -297,7 +297,77 @@ function NutricionPage() {
           ))}
         </div>
       </section>
+
+      {openRecipe && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/40 backdrop-blur-[2px]"
+          onClick={() => setOpenRecipe(null)}
+        >
+          <div
+            role="dialog"
+            aria-label={openRecipe.name}
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[88vh] w-full max-w-[430px] overflow-y-auto rounded-t-[2rem] bg-background pb-8"
+          >
+            <div className="relative">
+              <img
+                src={openRecipe.image}
+                alt={openRecipe.name}
+                width={768}
+                height={576}
+                className="h-52 w-full rounded-t-[2rem] object-cover"
+              />
+              <button
+                onClick={() => setOpenRecipe(null)}
+                aria-label="Cerrar"
+                className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-card text-foreground"
+              >
+                <X size={17} />
+              </button>
+            </div>
+
+            <div className="px-5 pt-4">
+              <p className="text-sm text-primary">{openRecipe.tag}</p>
+              <h3 className="font-display text-2xl font-bold">{openRecipe.name}</h3>
+              <p className="text-sm text-muted-foreground">{openRecipe.subtitle}</p>
+
+              <div className="mt-4 grid grid-cols-4 gap-2 text-center">
+                <Stat label="min" value={String(openRecipe.minutes)} />
+                <Stat label="kcal" value={String(openRecipe.kcal)} />
+                <Stat label="proteína" value={`${openRecipe.protein}g`} />
+                <Stat label="carbos" value={`${openRecipe.carbs}g`} />
+              </div>
+
+              <h4 className="mt-6 font-display text-lg font-semibold">Ingredientes</h4>
+              <ul className="mt-2 space-y-2">
+                {openRecipe.ingredients.map((ing) => (
+                  <li key={ing} className="flex items-start gap-2 text-sm">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                    <span>{ing}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => {
+                  update({
+                    meals: { ...day.meals, [openRecipe.meal]: !day.meals[openRecipe.meal] },
+                  });
+                  setOpenRecipe(null);
+                }}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-medium text-primary-foreground"
+              >
+                <Check size={17} />
+                {day.meals[openRecipe.meal]
+                  ? `Desmarcar ${openRecipe.meal}`
+                  : `Marcar como ${openRecipe.meal}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppShell>
+
   );
 }
 
