@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CalendarDays, Check, Droplets, Moon, Pill, Sun, Sunrise, Zap } from "lucide-react";
+import { CalendarDays, Check, Clock, Droplets, Pill, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useDayLog, useProfile } from "@/hooks/useMuskly";
 import { computePlan } from "@/lib/muskly";
-import { KEY_FOODS, MEAL_TEMPLATES, SUPPLEMENTS } from "@/lib/muskly-content";
+import { MEAL_TEMPLATES, SUPPLEMENTS } from "@/lib/muskly-content";
+import { FOOD_TYPES, MEAL_TABS, RECIPES, type MealKey, type Recipe } from "@/lib/muskly-recipes";
+
 
 export const Route = createFileRoute("/nutricion")({
   head: () => ({
@@ -49,6 +51,10 @@ function NutricionPage() {
   const plan = useMemo(() => (profile ? computePlan(profile) : null), [profile]);
   const days = useMemo(weekDays, []);
   const [selected, setSelected] = useState(() => new Date().getDay());
+  const [mealTab, setMealTab] = useState<MealKey | "todos">("todos");
+  const [openRecipe, setOpenRecipe] = useState<Recipe | null>(null);
+  const [typeFilter, setTypeFilter] = useState<string | null>(null);
+
 
   if (!loaded || !profile || !plan) {
     return (
