@@ -105,9 +105,17 @@ function EntrenarPage() {
 
   const complete = () => {
     setDone((d) => (d.includes(index) ? d : [...d, index]));
-    if (index < workout.exercises.length - 1) go(index + 1);
-    else void navigate({ to: "/ejercicios" });
+    if (index < workout.exercises.length - 1) {
+      setRestLeft(parseRest(exercise.rest));
+      setResting(true);
+    } else void navigate({ to: "/ejercicios" });
   };
+
+  const endRest = () => {
+    setResting(false);
+    go(index + 1);
+  };
+
 
   const progress = ((index + (done.includes(index) ? 1 : 0)) / workout.exercises.length) * 100;
 
