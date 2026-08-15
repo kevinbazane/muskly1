@@ -35,6 +35,17 @@ const levels: { id: Level; label: string; desc: string }[] = [
   { id: "avanzado", label: "Avanzado", desc: "Más de 2 años constante" },
 ];
 
+const dayOrder = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"] as const;
+const weekDays = [
+  { key: "dom", label: "dom" },
+  { key: "lun", label: "lun" },
+  { key: "mar", label: "mar" },
+  { key: "mié", label: "mié" },
+  { key: "jue", label: "jue" },
+  { key: "vie", label: "vie" },
+  { key: "sáb", label: "sáb" },
+] as const;
+
 function Onboarding() {
   const navigate = useNavigate();
   const { setProfile } = useProfile();
