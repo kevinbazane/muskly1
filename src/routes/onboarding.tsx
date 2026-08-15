@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Flame, Target, Wheat } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import { computePlan, type Goal, type Level, type Profile, type Sex } from "@/lib/muskly";
 import nutritionHero from "@/assets/nutrition-onboarding.jpg";
+
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -54,14 +55,17 @@ function Onboarding() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [sex, setSex] = useState<Sex>("hombre");
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("63");
+  const [height, setHeight] = useState("168");
   const [level, setLevel] = useState<Level>("principiante");
   const [daysPerWeek, setDaysPerWeek] = useState(4);
   const [selectedDays, setSelectedDays] = useState<string[]>(["lun", "mar", "jue", "vie"]);
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
+  const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
+
 
   const totalSteps = 8;
 
@@ -121,7 +125,18 @@ function Onboarding() {
             style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
           />
         </div>
+        {step === 3 ? (
+          <button
+            onClick={() => setStep((s) => s + 1)}
+            className="shrink-0 text-sm font-semibold tracking-wide text-muted-foreground"
+          >
+            OMITIR
+          </button>
+        ) : (
+          <div className="h-9 w-9 shrink-0" />
+        )}
       </div>
+
 
       <main className="flex-1 px-5 py-8">
         {step === 0 && (
@@ -210,27 +225,43 @@ function Onboarding() {
         )}
 
         {step === 3 && (
-          <Step title="Tu punto de partida" subtitle="Con esto calculamos tus calorías">
-            <Field label="Peso actual (kg)">
-              <input
-                value={weight}
-                onChange={(e) => setWeight(e.target.value.replace(/[^\d.]/g, ""))}
-                inputMode="decimal"
-                placeholder="58"
-                className="input-muskly"
-              />
-            </Field>
-            <Field label="Talla (cm)">
-              <input
-                value={height}
-                onChange={(e) => setHeight(e.target.value.replace(/\D/g, ""))}
-                inputMode="numeric"
-                placeholder="172"
-                className="input-muskly"
-              />
-            </Field>
-          </Step>
+          <div className="animate-fade-in space-y-8 pt-4">
+            <div className="text-center">
+              <h1 className="font-display text-[28px] font-bold leading-tight">
+                Cuéntanos más sobre ti
+              </h1>
+              <p className="mx-auto mt-2 max-w-[280px] text-sm text-muted-foreground">
+                Déjanos conocerte mejor para potenciar los resultados de tu entrenamiento
+              </p>
+            </div>
+
+            <RulerSelector
+              label="Peso"
+              value={Number(weight) || 0}
+              onChange={(kg) => setWeight(kg.toFixed(1))}
+              unit={weightUnit}
+              onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
+              options={[
+                { key: "kg", label: "kg" },
+                { key: "lbs", label: "lbs" },
+              ]}
+            />
+
+            <RulerSelector
+              label="Altura"
+              value={Number(height) || 0}
+              onChange={(cm) => setHeight(String(Math.round(cm)))}
+              unit={heightUnit}
+              onUnitChange={(u) => setHeightUnit(u as "cm" | "ft")}
+              options={[
+                { key: "cm", label: "cm" },
+                { key: "ft", label: "ft" },
+              ]}
+            />
+
+          </div>
         )}
+
 
         {step === 4 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
@@ -482,3 +513,183 @@ function todayKey() {
   const idx = new Date().getDay();
   return dayOrder[idx];
 }
+
+const KG_TO_LBS = 2.20462;
+const CM_TO_FT = 0.0328084;
+
+const unitConfig: Record<
+  string,
+  { min: number; max: number; step: number; decimals: number; labelInterval: number; tickWidth: number }
+> = {
+  kg: { min: 30, max: 150, step: 0.1, decimals: 1, labelInterval: 1, tickWidth: 22 },
+  lbs: { min: 66, max: 331, step: 0.2, decimals: 1, labelInterval: 5, tickWidth: 14 },
+  cm: { min: 100, max: 250, step: 1, decimals: 0, labelInterval: 10, tickWidth: 14 },
+  ft: { min: 3.28, max: 8.2, step: 0.02, decimals: 2, labelInterval: 0.5, tickWidth: 16 },
+};
+
+
+
+function fromBase(value: number, unit: string) {
+  if (unit === "lbs") return value * KG_TO_LBS;
+  if (unit === "ft") return value * CM_TO_FT;
+  return value;
+}
+
+function toBase(value: number, unit: string) {
+  if (unit === "lbs") return value / KG_TO_LBS;
+  if (unit === "ft") return value / CM_TO_FT;
+  return value;
+}
+
+function RulerSelector({
+  label,
+  value,
+  onChange,
+  unit,
+  onUnitChange,
+  options,
+}: {
+  label: string;
+  value: number;
+  onChange: (baseValue: number) => void;
+  unit: string;
+  onUnitChange: (unit: string) => void;
+  options: { key: string; label: string }[];
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isProgrammaticScroll = useRef(false);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const config = unitConfig[unit]!;
+
+  const values = useMemo(() => {
+    const arr: number[] = [];
+    for (let v = config.min; v <= config.max + 1e-9; v += config.step) {
+      arr.push(Number(v.toFixed(config.decimals)));
+    }
+    return arr;
+  }, [config]);
+
+  const [displayValue, setDisplayValue] = useState(() => {
+    const display = fromBase(value, unit);
+    return Math.max(config.min, Math.min(config.max, display));
+  });
+
+  useEffect(() => {
+    const display = fromBase(value, unit);
+    const clamped = Math.max(config.min, Math.min(config.max, display));
+    const rounded = Number(clamped.toFixed(config.decimals));
+    if (rounded !== displayValue) {
+      setDisplayValue(rounded);
+    }
+  }, [value, unit]);
+
+  const scrollToValue = (target: number) => {
+    if (!containerRef.current) return;
+    const index = Math.round((target - config.min) / config.step);
+    const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
+    const scrollLeft = clampedIndex * config.tickWidth - containerWidth / 2 + config.tickWidth / 2;
+    isProgrammaticScroll.current = true;
+    containerRef.current.scrollTo({ left: scrollLeft, behavior: "auto" });
+    window.setTimeout(() => {
+      isProgrammaticScroll.current = false;
+    }, 50);
+  };
+
+  useEffect(() => {
+    scrollToValue(displayValue);
+  }, [displayValue, unit, containerWidth]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const updateWidth = () => setContainerWidth(container.clientWidth);
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  const handleScroll = () => {
+    if (isProgrammaticScroll.current || !containerRef.current) return;
+    const scrollLeft = containerRef.current.scrollLeft;
+    const index = Math.round((scrollLeft + containerWidth / 2 - config.tickWidth / 2) / config.tickWidth);
+    const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
+    const newDisplayValue = values[clampedIndex] ?? config.min;
+    if (newDisplayValue !== displayValue) {
+      setDisplayValue(newDisplayValue);
+      onChange(toBase(newDisplayValue, unit));
+    }
+  };
+
+
+  const isMajor = (v: number) => {
+    const remainder = v % config.labelInterval;
+    return Math.abs(remainder) < 1e-9 || Math.abs(remainder - config.labelInterval) < 1e-9;
+  };
+
+
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <h3 className="font-display text-xl font-bold">{label}</h3>
+        <div className="flex rounded-full bg-muted p-1">
+          {options.map((opt) => (
+            <button
+              key={opt.key}
+              onClick={() => onUnitChange(opt.key)}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                unit === opt.key
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative mt-4">
+        <div className="text-center">
+          <span className="font-display text-6xl font-bold text-primary">
+            {displayValue.toFixed(config.decimals)}
+          </span>
+          <span className="ml-1 text-lg font-medium text-muted-foreground">{unit}</span>
+        </div>
+
+        <div className="relative mt-6 h-28">
+          <div className="pointer-events-none absolute top-0 left-1/2 z-10 h-14 w-0.5 -translate-x-1/2 rounded-full bg-primary" />
+          <div
+            ref={containerRef}
+            onScroll={handleScroll}
+            className="scrollbar-hide flex h-full overflow-x-auto"
+            style={{ scrollBehavior: "auto" }}
+          >
+            <div style={{ width: containerWidth / 2, flexShrink: 0 }} />
+            {values.map((v, i) => (
+              <div
+                key={i}
+                className="flex shrink-0 flex-col items-center justify-start"
+                style={{ width: config.tickWidth }}
+              >
+
+                <div
+                  className={`w-0.5 rounded-full ${
+                    isMajor(v) ? "h-8 bg-foreground" : "h-4 bg-muted-foreground/40"
+                  }`}
+                />
+                {isMajor(v) && (
+                  <span className="mt-1.5 text-[10px] font-medium text-muted-foreground">
+                    {Number(v.toFixed(config.decimals))}
+                  </span>
+                )}
+
+              </div>
+            ))}
+            <div style={{ width: containerWidth / 2, flexShrink: 0 }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
