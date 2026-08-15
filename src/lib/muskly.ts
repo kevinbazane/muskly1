@@ -1,6 +1,14 @@
 export type Goal = "volumen" | "definicion" | "fuerza";
 export type Level = "principiante" | "intermedio" | "avanzado";
 export type Sex = "hombre" | "mujer" | "otro";
+export type ActivityLevel = "sedentario" | "ligera" | "moderada" | "muy_activa";
+
+export const ACTIVITY_FACTORS: Record<ActivityLevel, number> = {
+  sedentario: 1.2,
+  ligera: 1.375,
+  moderada: 1.55,
+  muy_activa: 1.725,
+};
 
 export type Profile = {
   name: string;
