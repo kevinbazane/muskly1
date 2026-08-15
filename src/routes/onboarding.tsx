@@ -52,6 +52,12 @@ const activityLevels: { id: ActivityLevel; label: string; emoji: string }[] = [
   { id: "muy_activa", label: "Muy activa", emoji: "\u{1F970}" },
 ];
 
+const pushupOptions: { id: string; label: string; desc: string; emoji: string }[] = [
+  { id: "principiante", label: "Principiante", desc: "3-5 flexiones", emoji: "\u261D\uFE0F" },
+  { id: "intermedio", label: "Intermedio", desc: "5-10 flexiones", emoji: "\u270C\uFE0F" },
+  { id: "avanzado", label: "Avanzado", desc: "Al menos 10", emoji: "\u{1F44D}" },
+];
+
 const dayOrder = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
 const weekDays = [
   { key: "dom", label: "dom" },
@@ -77,13 +83,14 @@ function Onboarding() {
   const [selectedDays, setSelectedDays] = useState<string[]>(["lun", "mar", "jue", "vie"]);
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [activity, setActivity] = useState<ActivityLevel>("ligera");
+  const [pushups, setPushups] = useState<string | null>(null);
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
 
 
-  const totalSteps = 9;
+  const totalSteps = 10;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -102,8 +109,9 @@ function Onboarding() {
   const canContinue = (() => {
     if (step === 2) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 6) return selectedDays.length > 0;
-    if (step === 7) return Number(targetWeight) > 30;
+    if (step === 6) return pushups !== null;
+    if (step === 7) return selectedDays.length > 0;
+    if (step === 8) return Number(targetWeight) > 30;
     return true;
   })();
 
@@ -291,6 +299,42 @@ function Onboarding() {
 
         {step === 6 && (
           <Step
+            title="¿Cuántas flexiones puedes hacer seguidas?"
+            subtitle="Nos ayuda a calibrar tu primera rutina"
+          >
+            <div className="space-y-4">
+              {pushupOptions.map((p) => {
+                const active = pushups === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => setPushups(p.id)}
+                    className={`flex w-full items-center gap-5 rounded-2xl border-2 px-5 py-5 text-left transition-all ${
+                      active ? "border-primary bg-primary/5" : "border-border bg-card"
+                    }`}
+                  >
+                    <span aria-hidden className="text-3xl">
+                      {p.emoji}
+                    </span>
+                    <span className="flex flex-col">
+                      <span
+                        className={`font-display text-lg font-bold ${
+                          active ? "text-primary" : "text-foreground"
+                        }`}
+                      >
+                        {p.label}
+                      </span>
+                      <span className="text-sm text-muted-foreground">{p.desc}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </Step>
+        )}
+
+        {step === 7 && (
+          <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
           >
@@ -353,7 +397,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -378,7 +422,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 9 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
