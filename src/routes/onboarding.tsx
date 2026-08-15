@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Bell, Check, Dumbbell, Flame, Target } from "lucide-react";
+import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Flame, Target, Wheat } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import { computePlan, type Goal, type Level, type Profile, type Sex } from "@/lib/muskly";
+import nutritionHero from "@/assets/nutrition-onboarding.jpg";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
