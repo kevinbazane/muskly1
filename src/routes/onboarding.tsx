@@ -35,7 +35,7 @@ const levels: { id: Level; label: string; desc: string }[] = [
   { id: "avanzado", label: "Avanzado", desc: "Más de 2 años constante" },
 ];
 
-const dayOrder = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"] as const;
+const dayOrder = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
 const weekDays = [
   { key: "dom", label: "dom" },
   { key: "lun", label: "lun" },
