@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Wheat } from "lucide-react";
+import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Wheat, X } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import {
   computePlan,
