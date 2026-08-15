@@ -45,11 +45,13 @@ function Onboarding() {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [level, setLevel] = useState<Level>("principiante");
-  const [daysPerWeek, setDaysPerWeek] = useState(3);
+  const [daysPerWeek, setDaysPerWeek] = useState(4);
+  const [selectedDays, setSelectedDays] = useState<string[]>(["lun", "mar", "jue", "vie"]);
+  const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
 
-  const totalSteps = 6;
+  const totalSteps = 7;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -67,9 +69,16 @@ function Onboarding() {
   const canContinue = (() => {
     if (step === 1) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
     if (step === 2) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 4) return Number(targetWeight) > 30;
+    if (step === 4) return selectedDays.length > 0;
+    if (step === 5) return Number(targetWeight) > 30;
     return true;
   })();
+
+  function toggleDay(day: string) {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day].sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
+    );
+  }
 
   function next() {
     if (step === totalSteps - 1) {
