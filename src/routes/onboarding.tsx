@@ -431,3 +431,8 @@ function Summary({ profile }: { profile: Profile }) {
     </div>
   );
 }
+
+function todayKey() {
+  const idx = new Date().getDay();
+  return dayOrder[idx];
+}
