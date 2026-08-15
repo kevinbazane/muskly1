@@ -240,7 +240,7 @@ function Onboarding() {
               value={Number(weight) || 0}
               onChange={(kg) => setWeight(kg.toFixed(1))}
               unit={weightUnit}
-              onUnitChange={setWeightUnit}
+              onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
               options={[
                 { key: "kg", label: "kg" },
                 { key: "lbs", label: "lbs" },
@@ -252,12 +252,13 @@ function Onboarding() {
               value={Number(height) || 0}
               onChange={(cm) => setHeight(String(Math.round(cm)))}
               unit={heightUnit}
-              onUnitChange={setHeightUnit}
+              onUnitChange={(u) => setHeightUnit(u as "cm" | "ft")}
               options={[
                 { key: "cm", label: "cm" },
                 { key: "ft", label: "ft" },
               ]}
             />
+
           </div>
         )}
 
