@@ -223,7 +223,7 @@ function EntrenarPage() {
         </header>
 
         <div className="flex flex-1 flex-col items-center px-6 pt-4 pb-8 text-center">
-          <h1 className="font-display text-3xl font-bold text-foreground">Great job</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground">¡Gran trabajo!</h1>
 
           <div className="relative mt-8">
             <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl" />
@@ -241,16 +241,16 @@ function EntrenarPage() {
             </div>
           </div>
 
-          <h2 className="mt-6 font-display text-2xl font-bold text-foreground">Workout Completed</h2>
+          <h2 className="mt-6 font-display text-2xl font-bold text-foreground">Entrenamiento completado</h2>
 
           <div className="mt-6 grid w-full grid-cols-3 gap-3">
-            <StatCard icon={Flame} value={String(calories)} label="Total Calories" color="text-orange-500" />
-            <StatCard icon={Clock} value={formatDuration(duration)} label="Total Duration" color="text-primary" />
-            <StatCard icon={Dumbbell} value={String(workout.exercises.length)} label="Exercises" color="text-purple-500" />
+            <StatCard icon={Flame} value={String(calories)} label="Calorías totales" color="text-orange-500" />
+            <StatCard icon={Clock} value={formatDuration(duration)} label="Duración total" color="text-primary" />
+            <StatCard icon={Dumbbell} value={String(workout.exercises.length)} label="Ejercicios" color="text-purple-500" />
           </div>
 
           <div className="mt-6 w-full rounded-3xl bg-card p-5 text-left shadow-[0_10px_40px_-24px_rgba(0,0,0,0.5)]">
-            <h3 className="font-display text-base font-bold text-foreground">Rewards & Progress</h3>
+            <h3 className="font-display text-base font-bold text-foreground">Recompensas y progreso</h3>
 
             <div className="mt-4 rounded-2xl bg-muted p-4">
               <div className="flex items-center justify-between">
@@ -259,13 +259,13 @@ function EntrenarPage() {
                     <Zap size={20} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">Earned</p>
+                    <p className="text-sm font-semibold text-foreground">Ganado</p>
                     <p className="font-display text-lg font-bold text-primary">+{xp} XP</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-display text-sm font-bold text-foreground">Level 1</p>
-                  <p className="text-xs text-muted-foreground">{xp} to next</p>
+                  <p className="font-display text-sm font-bold text-foreground">Nivel 1</p>
+                  <p className="text-xs text-muted-foreground">{xp} al siguiente</p>
                 </div>
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
@@ -279,14 +279,14 @@ function EntrenarPage() {
                   <Calendar size={18} />
                   <span className="font-display text-lg font-bold">{newStreak || streak || 1}</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">Day Streak</p>
+                <p className="mt-1 text-xs text-muted-foreground">Racha de días</p>
               </div>
               <div className="rounded-2xl bg-purple-50 p-4 text-left dark:bg-purple-500/10">
                 <div className="flex items-center gap-2 text-purple-500">
                   <Award size={18} />
-                  <span className="font-display text-sm font-bold">New</span>
+                  <span className="font-display text-sm font-bold">Nuevo</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">Badge Unlocked</p>
+                <p className="mt-1 text-xs text-muted-foreground">Insignia desbloqueada</p>
               </div>
             </div>
           </div>
@@ -296,7 +296,7 @@ function EntrenarPage() {
               onClick={() => navigate({ to: "/ejercicios" })}
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 font-display font-bold text-primary-foreground shadow-[0_18px_40px_-18px_var(--color-primary)] transition-transform active:scale-95"
             >
-              Done <Check size={20} strokeWidth={3} />
+              Listo <Check size={20} strokeWidth={3} />
             </button>
             <button
               onClick={() => {
@@ -309,7 +309,7 @@ function EntrenarPage() {
               }}
               className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border py-4 font-medium text-foreground transition-colors hover:bg-muted"
             >
-              <Share2 size={18} /> Share Achievement
+              <Share2 size={18} /> Compartir logro
             </button>
           </div>
         </div>
