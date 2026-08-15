@@ -131,10 +131,74 @@ function EntrenarPage() {
     go(index + 1);
   };
 
+  useEffect(() => {
+    if (resting && restLeft === 0) endRest();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resting, restLeft]);
 
   const progress = ((index + (done.includes(index) ? 1 : 0)) / workout.exercises.length) * 100;
 
+  const nextExercise = workout.exercises[Math.min(index + 1, workout.exercises.length - 1)]!;
+
+  if (resting) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-primary text-primary-foreground">
+        <div className="overflow-hidden rounded-b-[32px] bg-card">
+          <img
+            src={demoImg}
+            alt={`Demostración de ${nextExercise.name}`}
+            className="h-[38vh] max-h-[360px] w-full object-cover"
+          />
+        </div>
+
+        <div className="flex items-start justify-between gap-3 px-6 pt-6">
+          <div className="min-w-0">
+            <p className="font-display text-sm font-bold tracking-wide uppercase">
+              Siguiente {index + 2}/{workout.exercises.length}
+            </p>
+            <h1 className="mt-1 font-display text-xl leading-snug font-bold">
+              {nextExercise.name}
+            </h1>
+          </div>
+          <span className="shrink-0 font-display text-xl font-bold">
+            ×{parseReps(nextExercise.reps)}
+          </span>
+        </div>
+
+        <div className="flex flex-1 flex-col items-center justify-center gap-4">
+          <p className="font-display text-2xl font-bold tracking-wide uppercase">Descanso</p>
+          <p className="font-display text-6xl font-extrabold tabular-nums">
+            {String(Math.floor(restLeft / 60)).padStart(2, "0")}:
+            {String(restLeft % 60).padStart(2, "0")}
+          </p>
+          <button
+            onClick={() => setRestLeft((s) => Math.max(s - 10, 0))}
+            className="rounded-full bg-primary-foreground/15 px-6 py-3 text-sm font-semibold"
+          >
+            Reducir 10 s
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 px-6 pb-10">
+          <button
+            onClick={() => setRestLeft((s) => s + 20)}
+            className="rounded-full bg-primary-foreground/15 py-4 font-display text-base font-bold transition-transform active:scale-95"
+          >
+            +20 s
+          </button>
+          <button
+            onClick={endRest}
+            className="rounded-full bg-card py-4 font-display text-base font-bold text-primary transition-transform active:scale-95"
+          >
+            OMITIR
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
+
     <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-background">
       {/* Media */}
       <div className="relative bg-muted">
