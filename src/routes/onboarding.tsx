@@ -139,8 +139,8 @@ function Onboarding() {
 
 
         {step === 1 && (
-          <div className="flex h-full flex-col animate-fade-in">
-            <div className="space-y-6">
+          <div className="flex h-full flex-col items-center justify-center text-center animate-fade-in">
+            <div className="w-full space-y-6">
               <h1 className="font-display text-[28px] font-bold leading-tight">
                 Toma decisiones más inteligentes con{" "}
                 <span className="text-primary">orientación profesional</span>
@@ -174,7 +174,7 @@ function Onboarding() {
                 <div className="pointer-events-none absolute -bottom-1 -left-1 h-8 w-8 rounded-full border-b-4 border-l-4 border-white" />
                 <div className="pointer-events-none absolute -bottom-1 -right-1 h-8 w-8 rounded-full border-b-4 border-r-4 border-white" />
               </div>
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="mx-auto max-w-[280px] text-sm text-muted-foreground">
                 Recibe comentarios instantáneos sobre lo que comes, recetas saludables según tu
                 objetivo y consejos diarios para tomar mejores decisiones.
               </p>
