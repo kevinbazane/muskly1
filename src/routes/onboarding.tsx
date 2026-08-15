@@ -679,9 +679,10 @@ function RulerSelector({
                 />
                 {isMajor(v) && (
                   <span className="mt-1.5 text-[10px] font-medium text-muted-foreground">
-                    {v.toFixed(config.decimals)}
+                    {Number(v.toFixed(config.decimals))}
                   </span>
                 )}
+
               </div>
             ))}
             <div style={{ width: containerWidth / 2, flexShrink: 0 }} />
