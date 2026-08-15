@@ -125,7 +125,18 @@ function Onboarding() {
             style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
           />
         </div>
+        {step === 3 ? (
+          <button
+            onClick={() => setStep((s) => s + 1)}
+            className="shrink-0 text-sm font-semibold tracking-wide text-muted-foreground"
+          >
+            OMITIR
+          </button>
+        ) : (
+          <div className="h-9 w-9 shrink-0" />
+        )}
       </div>
+
 
       <main className="flex-1 px-5 py-8">
         {step === 0 && (
