@@ -69,6 +69,8 @@ function EntrenarPage() {
   const [muted, setMuted] = useState(true);
   const [seconds, setSeconds] = useState(40);
   const [done, setDone] = useState<number[]>([]);
+  const [resting, setResting] = useState(false);
+  const [restLeft, setRestLeft] = useState(60);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -81,6 +83,13 @@ function EntrenarPage() {
     const id = setInterval(() => setSeconds((s) => (s > 0 ? s - 1 : 0)), 1000);
     return () => clearInterval(id);
   }, [mode, index]);
+
+  useEffect(() => {
+    if (!resting) return;
+    const id = setInterval(() => setRestLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(id);
+  }, [resting]);
+
 
   const go = useCallback(
     (next: number) => {
