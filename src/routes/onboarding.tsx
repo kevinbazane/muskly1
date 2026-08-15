@@ -326,7 +326,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && <Summary profile={draft} />}
+        {step === 7 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
