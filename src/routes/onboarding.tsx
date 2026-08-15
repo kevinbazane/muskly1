@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Check, Dumbbell, Flame, Target } from "lucide-react";
+import { ArrowLeft, Bell, Check, Dumbbell, Flame, Target } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import { computePlan, type Goal, type Level, type Profile, type Sex } from "@/lib/muskly";
 
@@ -35,6 +35,17 @@ const levels: { id: Level; label: string; desc: string }[] = [
   { id: "avanzado", label: "Avanzado", desc: "Más de 2 años constante" },
 ];
 
+const dayOrder = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
+const weekDays = [
+  { key: "dom", label: "dom" },
+  { key: "lun", label: "lun" },
+  { key: "mar", label: "mar" },
+  { key: "mié", label: "mié" },
+  { key: "jue", label: "jue" },
+  { key: "vie", label: "vie" },
+  { key: "sáb", label: "sáb" },
+] as const;
+
 function Onboarding() {
   const navigate = useNavigate();
   const { setProfile } = useProfile();
@@ -45,11 +56,13 @@ function Onboarding() {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [level, setLevel] = useState<Level>("principiante");
-  const [daysPerWeek, setDaysPerWeek] = useState(3);
+  const [daysPerWeek, setDaysPerWeek] = useState(4);
+  const [selectedDays, setSelectedDays] = useState<string[]>(["lun", "mar", "jue", "vie"]);
+  const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
 
-  const totalSteps = 6;
+  const totalSteps = 7;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -67,9 +80,16 @@ function Onboarding() {
   const canContinue = (() => {
     if (step === 1) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
     if (step === 2) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 4) return Number(targetWeight) > 30;
+    if (step === 4) return selectedDays.length > 0;
+    if (step === 5) return Number(targetWeight) > 30;
     return true;
   })();
+
+  function toggleDay(day: string) {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day].sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b))
+    );
+  }
 
   function next() {
     if (step === totalSteps - 1) {
@@ -179,20 +199,74 @@ function Onboarding() {
                 />
               ))}
             </div>
-            <Field label={`Días disponibles por semana: ${daysPerWeek}`}>
-              <input
-                type="range"
-                min={2}
-                max={6}
-                value={daysPerWeek}
-                onChange={(e) => setDaysPerWeek(Number(e.target.value))}
-                className="w-full accent-[var(--primary)]"
-              />
-            </Field>
           </Step>
         )}
 
         {step === 4 && (
+          <Step
+            title="¡Elige los días de entrenamiento!"
+            subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
+          >
+            <div className="mx-auto grid max-w-[340px] grid-cols-4 gap-3">
+              {weekDays.map((d) => {
+                const active = selectedDays.includes(d.key);
+                const isToday = d.key === todayKey();
+                return (
+                  <button
+                    key={d.key}
+                    onClick={() => toggleDay(d.key)}
+                    className={`relative flex aspect-square flex-col items-center justify-center rounded-2xl border-2 text-sm font-semibold transition-all ${
+                      active
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border bg-card text-foreground"
+                    }`}
+                  >
+                    {active && (
+                      <span className="absolute -top-2 -right-2 grid h-6 w-6 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                        <Check size={14} />
+                      </span>
+                    )}
+                    <span className="font-display text-lg capitalize">{d.label}</span>
+                    {isToday && (
+                      <span className="absolute bottom-2 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+                        Hoy
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex items-center justify-between rounded-2xl bg-card p-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
+                  <Bell size={20} />
+                </div>
+                <div>
+                  <p className="font-display font-semibold">Alertas</p>
+                  <p className="max-w-[200px] text-xs text-muted-foreground">
+                    ¡Crea un hábito y no te pierdas nunca tu día de entrenamiento!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setAlertsEnabled((v) => !v)}
+                className={`relative h-8 w-14 rounded-full transition-colors ${
+                  alertsEnabled ? "bg-primary" : "bg-muted"
+                }`}
+                aria-label={alertsEnabled ? "Desactivar alertas" : "Activar alertas"}
+              >
+                <span
+                  className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-sm transition-all ${
+                    alertsEnabled ? "left-7" : "left-1"
+                  }`}
+                />
+              </button>
+            </div>
+          </Step>
+        )}
+
+        {step === 5 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -217,7 +291,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 5 && <Summary profile={draft} />}
+        {step === 6 && <Summary profile={draft} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
@@ -356,4 +430,9 @@ function Summary({ profile }: { profile: Profile }) {
       </div>
     </div>
   );
+}
+
+function todayKey() {
+  const idx = new Date().getDay();
+  return dayOrder[idx];
 }
