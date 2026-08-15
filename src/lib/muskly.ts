@@ -1,6 +1,14 @@
 export type Goal = "volumen" | "definicion" | "fuerza";
 export type Level = "principiante" | "intermedio" | "avanzado";
 export type Sex = "hombre" | "mujer" | "otro";
+export type ActivityLevel = "sedentario" | "ligera" | "moderada" | "muy_activa";
+
+export const ACTIVITY_FACTORS: Record<ActivityLevel, number> = {
+  sedentario: 1.2,
+  ligera: 1.375,
+  moderada: 1.55,
+  muy_activa: 1.725,
+};
 
 export type Profile = {
   name: string;
@@ -10,6 +18,7 @@ export type Profile = {
   height: number; // cm
   level: Level;
   daysPerWeek: number;
+  activity?: ActivityLevel;
   goal: Goal;
   targetWeight: number;
   createdAt: string;
@@ -49,7 +58,8 @@ export function emptyDay(date = todayKey()): DayLog {
 export function computePlan(p: Profile): Plan {
   const sexOffset = p.sex === "hombre" ? 5 : p.sex === "mujer" ? -161 : -78;
   const bmr = 10 * p.weight + 6.25 * p.height - 5 * p.age + sexOffset;
-  const activity = 1.375 + Math.min(p.daysPerWeek, 6) * 0.045;
+  const base = p.activity ? ACTIVITY_FACTORS[p.activity] : 1.375;
+  const activity = base + Math.min(p.daysPerWeek, 6) * 0.02;
   const maintenance = bmr * activity;
   const surplus = p.goal === "volumen" ? 400 : p.goal === "fuerza" ? 250 : 50;
   const calories = Math.round((maintenance + surplus) / 10) * 10;
