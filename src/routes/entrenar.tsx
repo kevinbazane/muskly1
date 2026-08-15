@@ -186,8 +186,15 @@ function EntrenarPage() {
       setRestLeft(parseRest(exercise.rest));
       setResting(true);
     } else {
-      setDuration(Math.floor((Date.now() - startTime) / 1000));
+      const secs = Math.floor((Date.now() - startTime) / 1000);
+      setDuration(secs);
       saveWorkoutDone();
+      saveSession({
+        title: `${workout.day} · ${workout.focus}`,
+        exercises: workout.exercises.length,
+        seconds: secs,
+        kcal: Math.round((secs / 60) * 8.5),
+      });
       setCompleted(true);
     }
   };
