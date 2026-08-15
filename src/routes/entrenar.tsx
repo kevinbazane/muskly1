@@ -2,19 +2,29 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
+  Award,
+  Calendar,
   Check,
+  Clock,
+  Dumbbell,
+  Flame,
   HelpCircle,
   Music2,
   Repeat2,
   Settings,
+  Share2,
   SkipBack,
   SkipForward,
   Video as VideoIcon,
   Volume2,
   VolumeX,
+  X,
+  Zap,
 } from "lucide-react";
 import { ROUTINES, type Place } from "@/lib/muskly-content";
+import { DAY_KEY_PREFIX, emptyDay, todayKey } from "@/lib/muskly";
 import demoImg from "@/assets/exercise-demo.jpg";
+import completedAvatar from "@/assets/completed-avatar.jpg";
 
 type Search = { place: Place; day: number; i: number };
 
@@ -55,6 +65,44 @@ function parseRest(rest: string) {
   return /min/i.test(rest) ? n * 60 : n;
 }
 
+function formatDuration(totalSeconds: number) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function useStreak() {
+  const [streak, setStreak] = useState(0);
+  useEffect(() => {
+    try {
+      const done: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key?.startsWith(DAY_KEY_PREFIX)) continue;
+        const raw = localStorage.getItem(key);
+        if (raw && (JSON.parse(raw) as { workoutDone?: boolean }).workoutDone) {
+          done.push(key.slice(DAY_KEY_PREFIX.length));
+        }
+      }
+      done.sort();
+      let count = 0;
+      const cursor = new Date();
+      for (;;) {
+        const k = cursor.toISOString().slice(0, 10);
+        if (done.includes(k)) {
+          count++;
+          cursor.setDate(cursor.getDate() - 1);
+        } else if (count === 0 && k === new Date().toISOString().slice(0, 10)) {
+          cursor.setDate(cursor.getDate() - 1);
+        } else break;
+      }
+      setStreak(count);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+  return streak;
+}
 
 function EntrenarPage() {
   const { place, day, i } = Route.useSearch();
@@ -71,6 +119,10 @@ function EntrenarPage() {
   const [done, setDone] = useState<number[]>([]);
   const [resting, setResting] = useState(false);
   const [restLeft, setRestLeft] = useState(60);
+  const [completed, setCompleted] = useState(false);
+  const [startTime] = useState(() => Date.now());
+  const [duration, setDuration] = useState(0);
+  const streak = useStreak();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -89,7 +141,6 @@ function EntrenarPage() {
     const id = setInterval(() => setRestLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
     return () => clearInterval(id);
   }, [resting]);
-
 
   const go = useCallback(
     (next: number) => {
@@ -118,12 +169,27 @@ function EntrenarPage() {
     });
   };
 
+  const saveWorkoutDone = () => {
+    const key = DAY_KEY_PREFIX + todayKey();
+    try {
+      const raw = localStorage.getItem(key);
+      const dayLog = raw ? { ...emptyDay(todayKey()), ...(JSON.parse(raw) as Record<string, unknown>) } : emptyDay(todayKey());
+      localStorage.setItem(key, JSON.stringify({ ...dayLog, workoutDone: true }));
+    } catch {
+      /* ignore */
+    }
+  };
+
   const complete = () => {
     setDone((d) => (d.includes(index) ? d : [...d, index]));
     if (index < workout.exercises.length - 1) {
       setRestLeft(parseRest(exercise.rest));
       setResting(true);
-    } else void navigate({ to: "/ejercicios" });
+    } else {
+      setDuration(Math.floor((Date.now() - startTime) / 1000));
+      saveWorkoutDone();
+      setCompleted(true);
+    }
   };
 
   const endRest = () => {
@@ -139,6 +205,117 @@ function EntrenarPage() {
   const progress = ((index + (done.includes(index) ? 1 : 0)) / workout.exercises.length) * 100;
 
   const nextExercise = workout.exercises[Math.min(index + 1, workout.exercises.length - 1)]!;
+
+  if (completed) {
+    const calories = Math.round((duration / 60) * 8.5);
+    const xp = Math.min(150 + workout.exercises.length * 25, 600);
+    const newStreak = streak + (streak === 0 ? 1 : 0);
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-background">
+        <header className="flex items-center justify-between px-5 pt-6">
+          <button
+            onClick={() => navigate({ to: "/ejercicios" })}
+            aria-label="Cerrar"
+            className="grid h-11 w-11 place-items-center rounded-full bg-muted text-foreground"
+          >
+            <X size={20} />
+          </button>
+        </header>
+
+        <div className="flex flex-1 flex-col items-center px-6 pt-4 pb-8 text-center">
+          <h1 className="font-display text-3xl font-bold text-foreground">Great job</h1>
+
+          <div className="relative mt-8">
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl" />
+            <div className="relative mx-auto h-36 w-36 overflow-hidden rounded-full border-4 border-primary/20 shadow-xl">
+              <img
+                src={completedAvatar}
+                alt="Entrenamiento completado"
+                className="h-full w-full object-cover"
+                width={144}
+                height={144}
+              />
+            </div>
+            <div className="absolute bottom-1 right-1 grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg">
+              <Award size={20} />
+            </div>
+          </div>
+
+          <h2 className="mt-6 font-display text-2xl font-bold text-foreground">Workout Completed</h2>
+
+          <div className="mt-6 grid w-full grid-cols-3 gap-3">
+            <StatCard icon={Flame} value={String(calories)} label="Total Calories" color="text-orange-500" />
+            <StatCard icon={Clock} value={formatDuration(duration)} label="Total Duration" color="text-primary" />
+            <StatCard icon={Dumbbell} value={String(workout.exercises.length)} label="Exercises" color="text-purple-500" />
+          </div>
+
+          <div className="mt-6 w-full rounded-3xl bg-card p-5 text-left shadow-[0_10px_40px_-24px_rgba(0,0,0,0.5)]">
+            <h3 className="font-display text-base font-bold text-foreground">Rewards & Progress</h3>
+
+            <div className="mt-4 rounded-2xl bg-muted p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary">
+                    <Zap size={20} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Earned</p>
+                    <p className="font-display text-lg font-bold text-primary">+{xp} XP</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-display text-sm font-bold text-foreground">Level 1</p>
+                  <p className="text-xs text-muted-foreground">{xp} to next</p>
+                </div>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
+                <div className="h-full rounded-full bg-primary" style={{ width: "35%" }} />
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-orange-50 p-4 text-left dark:bg-orange-500/10">
+                <div className="flex items-center gap-2 text-orange-500">
+                  <Calendar size={18} />
+                  <span className="font-display text-lg font-bold">{newStreak || streak || 1}</span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">Day Streak</p>
+              </div>
+              <div className="rounded-2xl bg-purple-50 p-4 text-left dark:bg-purple-500/10">
+                <div className="flex items-center gap-2 text-purple-500">
+                  <Award size={18} />
+                  <span className="font-display text-sm font-bold">New</span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">Badge Unlocked</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-auto w-full space-y-3 pt-6">
+            <button
+              onClick={() => navigate({ to: "/ejercicios" })}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 font-display font-bold text-primary-foreground shadow-[0_18px_40px_-18px_var(--color-primary)] transition-transform active:scale-95"
+            >
+              Done <Check size={20} strokeWidth={3} />
+            </button>
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  void navigator.share({
+                    title: "Entrenamiento completado con Muskly",
+                    text: `Hoy completé ${workout.exercises.length} ejercicios en ${formatDuration(duration)}. ¡Vamos por más!`,
+                  });
+                }
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border py-4 font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <Share2 size={18} /> Share Achievement
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (resting) {
     return (
@@ -198,7 +375,6 @@ function EntrenarPage() {
   }
 
   return (
-
     <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-background">
       {/* Media */}
       <div className="relative bg-muted">
@@ -302,6 +478,26 @@ function EntrenarPage() {
           <SkipForward size={22} className="fill-current" />
         </button>
       </div>
+    </div>
+  );
+}
+
+function StatCard({
+  icon: Icon,
+  value,
+  label,
+  color,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  value: string;
+  label: string;
+  color: string;
+}) {
+  return (
+    <div className="rounded-2xl bg-card p-4 text-center shadow-sm">
+      <Icon size={22} className={`mx-auto ${color}`} />
+      <p className={`font-display mt-2 text-2xl font-bold ${color}`}>{value}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }
