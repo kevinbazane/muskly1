@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Flame, Target, Wheat } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import { computePlan, type Goal, type Level, type Profile, type Sex } from "@/lib/muskly";
 import nutritionHero from "@/assets/nutrition-onboarding.jpg";
+
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -62,6 +63,9 @@ function Onboarding() {
   const [alertsEnabled, setAlertsEnabled] = useState(true);
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
+  const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
+
 
   const totalSteps = 8;
 
