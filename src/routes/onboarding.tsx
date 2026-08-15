@@ -519,13 +519,14 @@ const CM_TO_FT = 0.0328084;
 
 const unitConfig: Record<
   string,
-  { min: number; max: number; step: number; decimals: number; labelInterval: number }
+  { min: number; max: number; step: number; decimals: number; labelInterval: number; tickWidth: number }
 > = {
-  kg: { min: 30, max: 150, step: 0.1, decimals: 1, labelInterval: 1 },
-  lbs: { min: 66, max: 331, step: 0.2, decimals: 1, labelInterval: 1 },
-  cm: { min: 100, max: 250, step: 1, decimals: 0, labelInterval: 10 },
-  ft: { min: 3.28, max: 8.2, step: 0.02, decimals: 2, labelInterval: 0.5 },
+  kg: { min: 30, max: 150, step: 0.1, decimals: 1, labelInterval: 1, tickWidth: 22 },
+  lbs: { min: 66, max: 331, step: 0.2, decimals: 1, labelInterval: 5, tickWidth: 14 },
+  cm: { min: 100, max: 250, step: 1, decimals: 0, labelInterval: 10, tickWidth: 14 },
+  ft: { min: 3.28, max: 8.2, step: 0.02, decimals: 2, labelInterval: 0.5, tickWidth: 16 },
 };
+
 
 
 function fromBase(value: number, unit: string) {
