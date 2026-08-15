@@ -137,7 +137,52 @@ function Onboarding() {
           </div>
         )}
 
+
         {step === 1 && (
+          <div className="flex h-full flex-col animate-fade-in">
+            <div className="space-y-6">
+              <h1 className="font-display text-[28px] font-bold leading-tight">
+                Toma decisiones más inteligentes con{" "}
+                <span className="text-primary">orientación profesional</span>
+              </h1>
+              <div className="relative mx-auto aspect-square w-full max-w-[320px]">
+                <div className="absolute inset-0 rounded-[40px] bg-[#f0f7f0] p-3">
+                  <img
+                    src={nutritionHero}
+                    alt="Plato saludable para ganar masa muscular"
+                    className="h-full w-full rounded-[32px] object-cover"
+                    width={1024}
+                    height={1024}
+                  />
+                  <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-0 rounded-2xl bg-white/90 px-3 py-2 shadow-lg backdrop-blur-sm">
+                    <div className="flex items-center gap-1.5 border-r border-border px-3 first:pl-0 last:border-0 last:pr-0">
+                      <Wheat size={18} className="text-primary" />
+                      <span className="text-sm font-bold text-foreground">24 g</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 border-r border-border px-3 last:border-0 last:pr-0">
+                      <Apple size={18} className="text-green-600" />
+                      <span className="text-sm font-bold text-foreground">48 g</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 last:pr-0">
+                      <Droplets size={18} className="text-blue-500" />
+                      <span className="text-sm font-bold text-foreground">520 kcal</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute -top-1 -left-1 h-8 w-8 rounded-full border-t-4 border-l-4 border-white" />
+                <div className="pointer-events-none absolute -top-1 -right-1 h-8 w-8 rounded-full border-t-4 border-r-4 border-white" />
+                <div className="pointer-events-none absolute -bottom-1 -left-1 h-8 w-8 rounded-full border-b-4 border-l-4 border-white" />
+                <div className="pointer-events-none absolute -bottom-1 -right-1 h-8 w-8 rounded-full border-b-4 border-r-4 border-white" />
+              </div>
+              <p className="text-center text-sm text-muted-foreground">
+                Recibe comentarios instantáneos sobre lo que comes, recetas saludables según tu
+                objetivo y consejos diarios para tomar mejores decisiones.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -164,7 +209,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <Step title="Tu punto de partida" subtitle="Con esto calculamos tus calorías">
             <Field label="Peso actual (kg)">
               <input
@@ -187,7 +232,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -203,7 +248,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 4 && (
+        {step === 5 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -267,7 +312,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -292,7 +337,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 6 && <Summary profile={draft} />}
+        {step === 7 && <Summary profile={draft} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
