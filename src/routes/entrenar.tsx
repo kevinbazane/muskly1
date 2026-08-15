@@ -50,6 +50,12 @@ function parseReps(reps: string) {
   return Number(nums[nums.length - 1]);
 }
 
+function parseRest(rest: string) {
+  const n = Number(rest.match(/\d+/)?.[0] ?? 60);
+  return /min/i.test(rest) ? n * 60 : n;
+}
+
+
 function EntrenarPage() {
   const { place, day, i } = Route.useSearch();
   const navigate = useNavigate();
