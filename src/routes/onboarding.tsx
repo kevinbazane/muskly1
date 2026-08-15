@@ -214,27 +214,42 @@ function Onboarding() {
         )}
 
         {step === 3 && (
-          <Step title="Tu punto de partida" subtitle="Con esto calculamos tus calorías">
-            <Field label="Peso actual (kg)">
-              <input
-                value={weight}
-                onChange={(e) => setWeight(e.target.value.replace(/[^\d.]/g, ""))}
-                inputMode="decimal"
-                placeholder="58"
-                className="input-muskly"
-              />
-            </Field>
-            <Field label="Talla (cm)">
-              <input
-                value={height}
-                onChange={(e) => setHeight(e.target.value.replace(/\D/g, ""))}
-                inputMode="numeric"
-                placeholder="172"
-                className="input-muskly"
-              />
-            </Field>
-          </Step>
+          <div className="animate-fade-in space-y-8 pt-4">
+            <div className="text-center">
+              <h1 className="font-display text-[28px] font-bold leading-tight">
+                Cuéntanos más sobre ti
+              </h1>
+              <p className="mx-auto mt-2 max-w-[280px] text-sm text-muted-foreground">
+                Déjanos conocerte mejor para potenciar los resultados de tu entrenamiento
+              </p>
+            </div>
+
+            <RulerSelector
+              label="Peso"
+              value={Number(weight) || 0}
+              onChange={(kg) => setWeight(kg.toFixed(1))}
+              unit={weightUnit}
+              onUnitChange={setWeightUnit}
+              options={[
+                { key: "kg", label: "kg" },
+                { key: "lbs", label: "lbs" },
+              ]}
+            />
+
+            <RulerSelector
+              label="Altura"
+              value={Number(height) || 0}
+              onChange={(cm) => setHeight(String(Math.round(cm)))}
+              unit={heightUnit}
+              onUnitChange={setHeightUnit}
+              options={[
+                { key: "cm", label: "cm" },
+                { key: "ft", label: "ft" },
+              ]}
+            />
+          </div>
         )}
+
 
         {step === 4 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
