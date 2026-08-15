@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { ROUTINES, type Place } from "@/lib/muskly-content";
 import { DAY_KEY_PREFIX, emptyDay, todayKey } from "@/lib/muskly";
+import { saveSession } from "@/lib/muskly-history";
 import demoImg from "@/assets/exercise-demo.jpg";
 import completedAvatar from "@/assets/completed-avatar.jpg";
 
