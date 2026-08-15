@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { ROUTINES, type Place } from "@/lib/muskly-content";
 import { DAY_KEY_PREFIX, emptyDay, todayKey } from "@/lib/muskly";
+import { saveSession } from "@/lib/muskly-history";
 import demoImg from "@/assets/exercise-demo.jpg";
 import completedAvatar from "@/assets/completed-avatar.jpg";
 
@@ -186,8 +187,15 @@ function EntrenarPage() {
       setRestLeft(parseRest(exercise.rest));
       setResting(true);
     } else {
-      setDuration(Math.floor((Date.now() - startTime) / 1000));
+      const secs = Math.floor((Date.now() - startTime) / 1000);
+      setDuration(secs);
       saveWorkoutDone();
+      saveSession({
+        title: `${workout.day} · ${workout.focus}`,
+        exercises: workout.exercises.length,
+        seconds: secs,
+        kcal: Math.round((secs / 60) * 8.5),
+      });
       setCompleted(true);
     }
   };
