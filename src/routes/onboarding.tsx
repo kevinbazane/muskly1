@@ -79,10 +79,10 @@ function Onboarding() {
   };
 
   const canContinue = (() => {
-    if (step === 1) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
-    if (step === 2) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 4) return selectedDays.length > 0;
-    if (step === 5) return Number(targetWeight) > 30;
+    if (step === 2) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
+    if (step === 3) return Number(weight) > 30 && Number(height) > 100;
+    if (step === 5) return selectedDays.length > 0;
+    if (step === 6) return Number(targetWeight) > 30;
     return true;
   })();
 
