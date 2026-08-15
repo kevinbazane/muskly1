@@ -178,7 +178,53 @@ function Onboarding() {
         )}
 
 
-        {step === 1 && <NutritionInfoStep />}
+        {step === 1 && (
+          <div className="flex flex-col">
+            <h1 className="font-display text-3xl font-bold leading-tight">
+              Construye tus músculos{" "}
+              <span className="text-primary">más rápido, seguro y efectivo!</span>
+            </h1>
+
+            <div className="mt-8 grid grid-cols-2 items-end gap-3">
+              <div className="rounded-3xl bg-muted p-5">
+                <p className="font-display text-center text-base font-semibold text-muted-foreground">
+                  Otros planes
+                </p>
+                <ul className="mt-4 space-y-3">
+                  {["Sin resultados", "Talla única para todos", "Fácil de recaer", "Difícil de hacer"].map(
+                    (t) => (
+                      <li key={t} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <X size={16} className="mt-0.5 shrink-0" />
+                        <span>{t}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="rounded-3xl bg-primary p-5 shadow-[0_20px_40px_-20px_var(--primary)]">
+                <p className="font-display text-center text-lg font-bold text-primary-foreground">
+                  Nuestro Plan
+                </p>
+                <ul className="mt-4 space-y-3">
+                  {["Cambios visibles", "Personalizado", "Sostenible", "Fácil de seguir"].map((t) => (
+                    <li
+                      key={t}
+                      className="flex items-start gap-2 text-sm font-medium text-primary-foreground"
+                    >
+                      <Check size={16} className="mt-0.5 shrink-0" />
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Un plan hecho a tu medida, con progresión real y sin atajos.
+            </p>
+          </div>
+        )}
 
         {step === 2 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
