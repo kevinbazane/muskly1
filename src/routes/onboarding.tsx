@@ -199,20 +199,74 @@ function Onboarding() {
                 />
               ))}
             </div>
-            <Field label={`Días disponibles por semana: ${daysPerWeek}`}>
-              <input
-                type="range"
-                min={2}
-                max={6}
-                value={daysPerWeek}
-                onChange={(e) => setDaysPerWeek(Number(e.target.value))}
-                className="w-full accent-[var(--primary)]"
-              />
-            </Field>
           </Step>
         )}
 
         {step === 4 && (
+          <Step
+            title="¡Elige los días de entrenamiento!"
+            subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
+          >
+            <div className="mx-auto grid max-w-[340px] grid-cols-4 gap-3">
+              {weekDays.map((d) => {
+                const active = selectedDays.includes(d.key);
+                const isToday = d.key === todayKey();
+                return (
+                  <button
+                    key={d.key}
+                    onClick={() => toggleDay(d.key)}
+                    className={`relative flex aspect-square flex-col items-center justify-center rounded-2xl border-2 text-sm font-semibold transition-all ${
+                      active
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border bg-card text-foreground"
+                    }`}
+                  >
+                    {active && (
+                      <span className="absolute -top-2 -right-2 grid h-6 w-6 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                        <Check size={14} />
+                      </span>
+                    )}
+                    <span className="font-display text-lg capitalize">{d.label}</span>
+                    {isToday && (
+                      <span className="absolute bottom-2 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+                        Hoy
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex items-center justify-between rounded-2xl bg-card p-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
+                  <Bell size={20} />
+                </div>
+                <div>
+                  <p className="font-display font-semibold">Alertas</p>
+                  <p className="max-w-[200px] text-xs text-muted-foreground">
+                    ¡Crea un hábito y no te pierdas nunca tu día de entrenamiento!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setAlertsEnabled((v) => !v)}
+                className={`relative h-8 w-14 rounded-full transition-colors ${
+                  alertsEnabled ? "bg-primary" : "bg-muted"
+                }`}
+                aria-label={alertsEnabled ? "Desactivar alertas" : "Activar alertas"}
+              >
+                <span
+                  className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-sm transition-all ${
+                    alertsEnabled ? "left-7" : "left-1"
+                  }`}
+                />
+              </button>
+            </div>
+          </Step>
+        )}
+
+        {step === 5 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -237,7 +291,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 5 && <Summary profile={draft} />}
+        {step === 6 && <Summary profile={draft} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
