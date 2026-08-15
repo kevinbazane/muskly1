@@ -560,7 +560,6 @@ function RulerSelector({
   const isProgrammaticScroll = useRef(false);
   const [containerWidth, setContainerWidth] = useState(0);
   const config = unitConfig[unit]!;
-  const tickWidth = 12;
 
   const values = useMemo(() => {
     const arr: number[] = [];
@@ -588,7 +587,7 @@ function RulerSelector({
     if (!containerRef.current) return;
     const index = Math.round((target - config.min) / config.step);
     const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
-    const scrollLeft = clampedIndex * tickWidth - containerWidth / 2 + tickWidth / 2;
+    const scrollLeft = clampedIndex * config.tickWidth - containerWidth / 2 + config.tickWidth / 2;
     isProgrammaticScroll.current = true;
     containerRef.current.scrollTo({ left: scrollLeft, behavior: "auto" });
     window.setTimeout(() => {
@@ -612,7 +611,7 @@ function RulerSelector({
   const handleScroll = () => {
     if (isProgrammaticScroll.current || !containerRef.current) return;
     const scrollLeft = containerRef.current.scrollLeft;
-    const index = Math.round((scrollLeft + containerWidth / 2 - tickWidth / 2) / tickWidth);
+    const index = Math.round((scrollLeft + containerWidth / 2 - config.tickWidth / 2) / config.tickWidth);
     const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
     const newDisplayValue = values[clampedIndex] ?? config.min;
     if (newDisplayValue !== displayValue) {
@@ -620,6 +619,7 @@ function RulerSelector({
       onChange(toBase(newDisplayValue, unit));
     }
   };
+
 
   const isMajor = (v: number) => {
     const remainder = v % config.labelInterval;
