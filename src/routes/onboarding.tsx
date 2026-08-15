@@ -2,7 +2,15 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Wheat } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
-import { computePlan, type Goal, type Level, type Plan, type Profile, type Sex } from "@/lib/muskly";
+import {
+  computePlan,
+  type ActivityLevel,
+  type Goal,
+  type Level,
+  type Plan,
+  type Profile,
+  type Sex,
+} from "@/lib/muskly";
 import nutritionHero from "@/assets/nutrition-onboarding.jpg";
 
 
@@ -37,6 +45,13 @@ const levels: { id: Level; label: string; desc: string }[] = [
   { id: "avanzado", label: "Avanzado", desc: "Más de 2 años constante" },
 ];
 
+const activityLevels: { id: ActivityLevel; label: string; emoji: string }[] = [
+  { id: "sedentario", label: "Sedentario", emoji: "\u{1F468}\u200D\u{1F4BB}" },
+  { id: "ligera", label: "Actividad ligera", emoji: "\u{1F6B6}" },
+  { id: "moderada", label: "Moderadamente activa", emoji: "\u{1F3C3}" },
+  { id: "muy_activa", label: "Muy activa", emoji: "\u{1F970}" },
+];
+
 const dayOrder = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
 const weekDays = [
   { key: "dom", label: "dom" },
@@ -61,13 +76,14 @@ function Onboarding() {
   const [daysPerWeek, setDaysPerWeek] = useState(4);
   const [selectedDays, setSelectedDays] = useState<string[]>(["lun", "mar", "jue", "vie"]);
   const [alertsEnabled, setAlertsEnabled] = useState(true);
+  const [activity, setActivity] = useState<ActivityLevel>("ligera");
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
 
 
-  const totalSteps = 8;
+  const totalSteps = 9;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -77,6 +93,7 @@ function Onboarding() {
     height: Number(height) || 170,
     level,
     daysPerWeek,
+    activity,
     goal,
     targetWeight: Number(targetWeight) || (Number(weight) || 60) + 5,
     createdAt: new Date().toISOString(),
@@ -85,8 +102,8 @@ function Onboarding() {
   const canContinue = (() => {
     if (step === 2) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 5) return selectedDays.length > 0;
-    if (step === 6) return Number(targetWeight) > 30;
+    if (step === 6) return selectedDays.length > 0;
+    if (step === 7) return Number(targetWeight) > 30;
     return true;
   })();
 
@@ -239,6 +256,41 @@ function Onboarding() {
 
         {step === 5 && (
           <Step
+            title="¿Cuál es tu nivel de actividad?"
+            subtitle="Así ajustamos tus calorías diarias con más precisión"
+          >
+            <div className="space-y-3">
+              {activityLevels.map((a) => {
+                const active = activity === a.id;
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => setActivity(a.id)}
+                    className={`flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-5 text-left transition-all ${
+                      active
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-card"
+                    }`}
+                  >
+                    <span aria-hidden className="text-2xl">
+                      {a.emoji}
+                    </span>
+                    <span
+                      className={`font-display text-base font-semibold ${
+                        active ? "text-primary" : "text-foreground"
+                      }`}
+                    >
+                      {a.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </Step>
+        )}
+
+        {step === 6 && (
+          <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
           >
@@ -301,7 +353,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -326,7 +378,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 8 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
