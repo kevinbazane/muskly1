@@ -427,40 +427,49 @@ function OptionCard({
   );
 }
 
-function Summary({ profile }: { profile: Profile }) {
-  const plan = computePlan(profile);
+function NutritionInfoStep({ plan }: { plan?: Plan }) {
+  const protein = plan?.protein ?? 24;
+  const carbs = plan?.carbs ?? 48;
+  const calories = plan?.calories ?? 520;
   return (
-    <div className="animate-fade-in space-y-5">
-      <div>
-        <h1 className="font-display text-2xl font-bold">Listo, {profile.name}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Este es tu punto de partida diario. Lo ajustaremos según tu progreso.
-        </p>
-      </div>
-      <div className="rounded-3xl bg-primary p-5 text-primary-foreground shadow-[0_20px_50px_-24px_var(--primary)]">
-        <div className="flex items-center gap-2 text-sm opacity-90">
-          <Flame size={16} /> Calorías objetivo
-        </div>
-        <p className="font-display mt-1 text-4xl font-bold">{plan.calories} kcal</p>
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          ["Proteína", `${plan.protein} g`],
-          ["Carbos", `${plan.carbs} g`],
-          ["Grasas", `${plan.fats} g`],
-        ].map(([k, v]) => (
-          <div key={k} className="rounded-2xl bg-card p-4 text-center shadow-sm">
-            <p className="text-xs text-muted-foreground">{k}</p>
-            <p className="font-display text-lg font-bold">{v}</p>
+    <div className="flex h-full flex-col items-center justify-center text-center animate-fade-in">
+      <div className="w-full space-y-6">
+        <h1 className="font-display text-[28px] font-bold leading-tight">
+          Toma decisiones más inteligentes con{" "}
+          <span className="text-primary">orientación profesional</span>
+        </h1>
+        <div className="relative mx-auto aspect-square w-full max-w-[320px]">
+          <div className="absolute inset-0 rounded-[40px] bg-[#f0f7f0] p-3">
+            <img
+              src={nutritionHero}
+              alt="Plato saludable para ganar masa muscular"
+              className="h-full w-full rounded-[32px] object-cover"
+              width={1024}
+              height={1024}
+            />
+            <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-0 rounded-2xl bg-white/90 px-3 py-2 shadow-lg backdrop-blur-sm">
+              <div className="flex items-center gap-1.5 border-r border-border px-3 first:pl-0 last:border-0 last:pr-0">
+                <Wheat size={18} className="text-primary" />
+                <span className="text-sm font-bold text-foreground">{protein} g</span>
+              </div>
+              <div className="flex items-center gap-1.5 border-r border-border px-3 last:border-0 last:pr-0">
+                <Apple size={18} className="text-green-600" />
+                <span className="text-sm font-bold text-foreground">{carbs} g</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 last:pr-0">
+                <Droplets size={18} className="text-blue-500" />
+                <span className="text-sm font-bold text-foreground">{calories} kcal</span>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-      <div className="flex items-center gap-3 rounded-2xl bg-muted p-4">
-        <Target size={20} className="shrink-0 text-primary" />
-        <p className="text-sm text-muted-foreground">
-          Meta: llegar a <strong className="text-foreground">{profile.targetWeight} kg</strong>{" "}
-          entrenando {profile.daysPerWeek} días por semana y bebiendo {plan.water} ml de agua al
-          día.
+          <div className="pointer-events-none absolute -top-1 -left-1 h-8 w-8 rounded-full border-t-4 border-l-4 border-white" />
+          <div className="pointer-events-none absolute -top-1 -right-1 h-8 w-8 rounded-full border-t-4 border-r-4 border-white" />
+          <div className="pointer-events-none absolute -bottom-1 -left-1 h-8 w-8 rounded-full border-b-4 border-l-4 border-white" />
+          <div className="pointer-events-none absolute -bottom-1 -right-1 h-8 w-8 rounded-full border-b-4 border-r-4 border-white" />
+        </div>
+        <p className="mx-auto max-w-[280px] text-sm text-muted-foreground">
+          Recibe comentarios instantáneos sobre lo que comes, recetas saludables según tu
+          objetivo y consejos diarios para tomar mejores decisiones.
         </p>
       </div>
     </div>
