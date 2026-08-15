@@ -557,7 +557,7 @@ function RulerSelector({
   const containerRef = useRef<HTMLDivElement>(null);
   const isProgrammaticScroll = useRef(false);
   const [containerWidth, setContainerWidth] = useState(0);
-  const config = unitConfig[unit];
+  const config = unitConfig[unit]!;
   const tickWidth = 12;
 
   const values = useMemo(() => {
@@ -612,7 +612,7 @@ function RulerSelector({
     const scrollLeft = containerRef.current.scrollLeft;
     const index = Math.round((scrollLeft + containerWidth / 2 - tickWidth / 2) / tickWidth);
     const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
-    const newDisplayValue = values[clampedIndex];
+    const newDisplayValue = values[clampedIndex] ?? config.min;
     if (newDisplayValue !== displayValue) {
       setDisplayValue(newDisplayValue);
       onChange(toBase(newDisplayValue, unit));
@@ -623,6 +623,7 @@ function RulerSelector({
     const remainder = v % config.labelInterval;
     return Math.abs(remainder) < 1e-9 || Math.abs(remainder - config.labelInterval) < 1e-9;
   };
+
 
   return (
     <div>
