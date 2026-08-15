@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Flame, Target, Wheat } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import { computePlan, type Goal, type Level, type Profile, type Sex } from "@/lib/muskly";
@@ -55,8 +55,8 @@ function Onboarding() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [sex, setSex] = useState<Sex>("hombre");
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("63");
+  const [height, setHeight] = useState("168");
   const [level, setLevel] = useState<Level>("principiante");
   const [daysPerWeek, setDaysPerWeek] = useState(4);
   const [selectedDays, setSelectedDays] = useState<string[]>(["lun", "mar", "jue", "vie"]);
