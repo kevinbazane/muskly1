@@ -76,7 +76,7 @@ function InformePage() {
   }, [weights, profile]);
 
   const saveWeight = () => {
-    const kg = Number(input.replace(",", "."));
+    const kg = Math.round(Number(input));
     if (!kg || kg < 30 || kg > 250) return;
     const next = [...weights.filter((w) => w.date !== todayKey()), { date: todayKey(), kg }].sort(
       (a, b) => a.date.localeCompare(b.date),
@@ -171,9 +171,9 @@ function InformePage() {
 
           <div className="mt-4 flex gap-2">
             <input
-              inputMode="decimal"
+              inputMode="numeric"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value.replace(/\D/g, ""))}
               placeholder="Registrar peso de hoy (kg)"
               className="input-muskly"
             />
