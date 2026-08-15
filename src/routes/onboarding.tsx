@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Check, Dumbbell, Flame, Target } from "lucide-react";
+import { ArrowLeft, Bell, Check, Dumbbell, Flame, Target } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import { computePlan, type Goal, type Level, type Profile, type Sex } from "@/lib/muskly";
 
