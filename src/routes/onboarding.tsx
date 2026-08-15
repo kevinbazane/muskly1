@@ -63,7 +63,7 @@ function Onboarding() {
   const [goal, setGoal] = useState<Goal>("volumen");
   const [targetWeight, setTargetWeight] = useState("");
 
-  const totalSteps = 7;
+  const totalSteps = 8;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
