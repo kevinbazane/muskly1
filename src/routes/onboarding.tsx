@@ -669,8 +669,9 @@ function RulerSelector({
               <div
                 key={i}
                 className="flex shrink-0 flex-col items-center justify-start"
-                style={{ width: tickWidth }}
+                style={{ width: config.tickWidth }}
               >
+
                 <div
                   className={`w-0.5 rounded-full ${
                     isMajor(v) ? "h-8 bg-foreground" : "h-4 bg-muted-foreground/40"
