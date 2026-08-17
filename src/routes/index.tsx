@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
-import { Bell, Check, ChevronRight, Dumbbell, Pencil, Quote } from "lucide-react";
+import { Bell, Check, ChevronRight, Dumbbell, Quote } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useDayLog, useProfile } from "@/hooks/useMuskly";
 import { MEAL_TEMPLATES, ROUTINES } from "@/lib/muskly-content";
