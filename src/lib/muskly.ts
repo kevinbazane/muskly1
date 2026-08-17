@@ -96,14 +96,14 @@ export type Tip = {
 
 export const TIPS: Tip[] = [
   {
-    title: "Apunta a 1.6–2.2 g de proteína por kg",
-    body: "Por encima de ~1.6 g/kg al día las ganancias de masa magra se estabilizan. Reparte la proteína en 3–4 comidas.",
-    source: "Morton et al., Br J Sports Med (2018) — metaanálisis de 49 estudios",
-  },
-  {
     title: "Entrena cerca del fallo, con técnica",
     body: "Dejar 1–3 repeticiones en reserva genera hipertrofia similar al fallo total, con menos fatiga acumulada.",
     source: "Refalo et al., J Sports Sci (2023)",
+  },
+  {
+    title: "Duerme 7–9 horas",
+    body: "La restricción de sueño reduce la síntesis proteica y aumenta la pérdida de masa magra en déficit.",
+    source: "Dattilo et al., Med Hypotheses (2011)",
   },
   {
     title: "10–20 series semanales por grupo muscular",
@@ -111,9 +111,9 @@ export const TIPS: Tip[] = [
     source: "Schoenfeld et al., J Sports Sci (2017)",
   },
   {
-    title: "Duerme 7–9 horas",
-    body: "La restricción de sueño reduce la síntesis proteica y aumenta la pérdida de masa magra en déficit.",
-    source: "Dattilo et al., Med Hypotheses (2011)",
+    title: "Apunta a 1.6–2.2 g de proteína por kg",
+    body: "Por encima de ~1.6 g/kg al día las ganancias de masa magra se estabilizan. Reparte la proteína en 3–4 comidas.",
+    source: "Morton et al., Br J Sports Med (2018) — metaanálisis de 49 estudios",
   },
   {
     title: "Superávit calórico moderado",
