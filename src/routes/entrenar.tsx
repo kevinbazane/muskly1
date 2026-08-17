@@ -170,19 +170,29 @@ function EntrenarPage() {
     });
   };
 
-  const saveWorkoutDone = () => {
+  const patchDay = (patch: Record<string, unknown>) => {
     const key = DAY_KEY_PREFIX + todayKey();
     try {
       const raw = localStorage.getItem(key);
-      const dayLog = raw ? { ...emptyDay(todayKey()), ...(JSON.parse(raw) as Record<string, unknown>) } : emptyDay(todayKey());
-      localStorage.setItem(key, JSON.stringify({ ...dayLog, workoutDone: true }));
+      const dayLog = raw
+        ? { ...emptyDay(todayKey()), ...(JSON.parse(raw) as Record<string, unknown>) }
+        : emptyDay(todayKey());
+      localStorage.setItem(key, JSON.stringify({ ...dayLog, ...patch }));
     } catch {
       /* ignore */
     }
   };
 
+  const saveWorkoutDone = () => patchDay({ workoutDone: true });
+
   const complete = () => {
+    const doneCount = done.includes(index) ? done.length : done.length + 1;
     setDone((d) => (d.includes(index) ? d : [...d, index]));
+    patchDay({
+      exercisesDone: doneCount,
+      exercisesTotal: workout.exercises.length,
+      workoutTitle: `${workout.day} · ${workout.focus}`,
+    });
     if (index < workout.exercises.length - 1) {
       setRestLeft(parseRest(exercise.rest));
       setResting(true);

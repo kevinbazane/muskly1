@@ -37,6 +37,9 @@ export type DayLog = {
   workoutDone: boolean;
   meals: Record<"desayuno" | "almuerzo" | "cena" | "snack", boolean>;
   water: number; // vasos de 250ml
+  exercisesDone?: number;
+  exercisesTotal?: number;
+  workoutTitle?: string;
 };
 
 export const PROFILE_KEY = "muskly.profile";
