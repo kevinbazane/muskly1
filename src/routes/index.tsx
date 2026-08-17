@@ -187,7 +187,7 @@ function Diario() {
             <p className="font-display mt-8 text-xl font-bold">
               {workoutKcalDone.toLocaleString("es-PE")}
             </p>
-            <p className="text-xs opacity-85">de {workoutKcalTotal} kcal</p>
+            <p className="text-xs opacity-85">kcal quemadas</p>
           </div>
 
           <ul className="space-y-3 rounded-3xl bg-card p-4 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.6)]">
