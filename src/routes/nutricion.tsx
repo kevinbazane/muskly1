@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CalendarDays, Check, Clock, Droplets, Pill, X } from "lucide-react";
+import { CalendarDays, Check, Clock, Droplets, Minus, Pill, Plus, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useDayLog, useProfile } from "@/hooks/useMuskly";
 import { computePlan } from "@/lib/muskly";
