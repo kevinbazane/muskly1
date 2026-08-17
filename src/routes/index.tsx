@@ -102,6 +102,8 @@ function Diario() {
   const doneCount = day.workoutDone ? total : Math.min(day.exercisesDone ?? 0, total);
   const remaining = Math.max(0, total - doneCount);
   const workoutPct = total ? doneCount / total : 0;
+  const workoutKcalTotal = workout.exercises.length * 55 + 60;
+  const workoutKcalDone = Math.round(workoutKcalTotal * workoutPct);
 
   const caloriesDone = Math.round(
     MEAL_TEMPLATES.filter((m) => day.meals[m.key]).reduce((s, m) => s + m.share * plan.calories, 0),
