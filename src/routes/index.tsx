@@ -175,12 +175,6 @@ function Diario() {
       <section className="mt-7 px-5">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-semibold">Actividad de hoy</h2>
-          <Link
-            to="/ejercicios"
-            className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground"
-          >
-            Editar <Pencil size={14} />
-          </Link>
         </div>
 
         <div className="mt-3 grid grid-cols-[104px_1fr] gap-3">
@@ -189,9 +183,9 @@ function Diario() {
               <Dumbbell size={20} />
             </span>
             <p className="font-display mt-8 text-xl font-bold">
-              {caloriesDone.toLocaleString("es-PE")}
+              {workoutKcalDone.toLocaleString("es-PE")}
             </p>
-            <p className="text-xs opacity-85">de {plan.calories} kcal</p>
+            <p className="text-xs opacity-85">de {workoutKcalTotal} kcal</p>
           </div>
 
           <ul className="space-y-3 rounded-3xl bg-card p-4 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.6)]">
