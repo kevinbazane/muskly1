@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CalendarDays, Check, Clock, Droplets, Pill, X } from "lucide-react";
+import { CalendarDays, Check, Clock, Droplets, Minus, Pill, Plus, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useDayLog, useProfile } from "@/hooks/useMuskly";
 import { computePlan } from "@/lib/muskly";
@@ -253,12 +253,13 @@ function NutricionPage() {
       <section className="mt-6 px-5">
         <h2 className="font-display text-lg font-semibold">Hidratación</h2>
         <div className="mt-3 flex items-center gap-3 rounded-3xl bg-card p-4 shadow-[0_10px_36px_-28px_rgba(0,0,0,0.6)]">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-            <Droplets size={18} />
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+            <Droplets size={20} />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-medium">
-              {day.water * 250} ml de {plan.water} ml
+            <p className="font-display font-semibold">Agua</p>
+            <p className="text-sm text-muted-foreground">
+              {day.water} {day.water === 1 ? "vaso" : "vasos"} · {day.water * 250} ml
             </p>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
               <div
@@ -268,10 +269,21 @@ function NutricionPage() {
             </div>
           </div>
           <button
-            onClick={() => update({ water: day.water + 1 })}
-            className="shrink-0 rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-foreground"
+            type="button"
+            aria-label="Quitar un vaso"
+            disabled={day.water === 0}
+            onClick={() => update({ water: Math.max(0, day.water - 1) })}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted text-foreground transition-opacity disabled:opacity-40"
           >
-            + Vaso
+            <Minus size={18} />
+          </button>
+          <button
+            type="button"
+            aria-label="Añadir un vaso"
+            onClick={() => update({ water: day.water + 1 })}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted text-foreground"
+          >
+            <Plus size={18} />
           </button>
         </div>
       </section>
