@@ -179,7 +179,7 @@ function Diario() {
           <h2 className="font-display text-lg font-semibold">Actividad de hoy</h2>
         </div>
 
-        <div className="mt-3 grid grid-cols-[104px_1fr] gap-3">
+        <div className="mt-3 grid grid-cols-[104px_minmax(0,1fr)] gap-3">
           <div className="relative overflow-hidden rounded-3xl bg-primary p-4 text-primary-foreground">
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary-foreground/20">
               <Dumbbell size={20} />
@@ -187,10 +187,10 @@ function Diario() {
             <p className="font-display mt-8 text-xl font-bold">
               {workoutKcalDone.toLocaleString("es-PE")}
             </p>
-            <p className="text-xs opacity-85">kcal quemadas</p>
+            <p className="text-xs opacity-85">calorías</p>
           </div>
 
-          <ul className="space-y-3 rounded-3xl bg-card p-4 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.6)]">
+          <ul className="min-w-0 overflow-hidden space-y-3 rounded-3xl bg-card p-4 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.6)]">
             {workout.exercises.slice(0, 3).map((ex, i) => (
               <li key={ex.name} className="flex items-center gap-3">
                 <span
