@@ -148,9 +148,9 @@ function Onboarding() {
     if (step === 2) return Number(age) >= 12 && Number(age) < 100;
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
     if (step === 4) return targetWeightValue > 30;
-    if (step === 6) return name.trim().length > 1;
-    if (step === 9) return pushups !== null;
-    if (step === 10) return selectedDays.length > 0;
+    if (step === 7) return name.trim().length > 1;
+    if (step === 10) return pushups !== null;
+    if (step === 11) return selectedDays.length > 0;
     return true;
   })();
 
@@ -371,7 +371,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -419,7 +419,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -434,7 +434,7 @@ function Onboarding() {
 
 
 
-        {step === 7 && (
+        {step === 8 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -450,7 +450,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -485,7 +485,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && (
+        {step === 10 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -521,7 +521,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 10 && (
+        {step === 11 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -585,7 +585,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 11 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 12 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
