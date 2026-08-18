@@ -341,11 +341,6 @@ function Onboarding() {
                 className="input-muskly"
               />
             </Field>
-            <div className="grid grid-cols-3 gap-2">
-              {(["hombre", "mujer", "otro"] as Sex[]).map((s) => (
-                <Chip key={s} active={sex === s} onClick={() => setSex(s)} label={s} />
-              ))}
-            </div>
           </Step>
         )}
 
