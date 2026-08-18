@@ -122,9 +122,9 @@ function Onboarding() {
   const [targetWeight, setTargetWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
+  const [equipment, setEquipment] = useState<string[]>(["portatil"]);
 
-
-  const totalSteps = 12;
+  const totalSteps = 13;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -141,7 +141,11 @@ function Onboarding() {
   };
 
   const currentWeight = Number(weight) || 60;
-  const targetWeightValue = Number(targetWeight) || currentWeight;
+  const maxTargetWeight = currentWeight + 20;
+  const targetWeightValue = Math.min(
+    maxTargetWeight,
+    Math.max(currentWeight, Number(targetWeight) || currentWeight),
+  );
   const gainPercent = Math.max(
     0,
     Math.round(((targetWeightValue - currentWeight) / currentWeight) * 100),
@@ -151,11 +155,19 @@ function Onboarding() {
     if (step === 2) return Number(age) >= 12 && Number(age) < 100;
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
     if (step === 4) return targetWeightValue > 30;
+    if (step === 5) return equipment.length > 0;
     if (step === 7) return name.trim().length > 1;
     if (step === 10) return pushups !== null;
     if (step === 11) return selectedDays.length > 0;
     return true;
   })();
+
+  function toggleEquipment(id: string) {
+    setEquipment((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id],
+    );
+  }
+
 
   function toggleDay(day: string) {
     setSelectedDays((prev) =>
