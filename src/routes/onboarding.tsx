@@ -159,9 +159,9 @@ function Onboarding() {
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
     if (step === 4) return targetWeightValue > 30;
     if (step === 5) return equipment.length > 0;
-    if (step === 6) return name.trim().length > 1;
-    if (step === 8) return pushups !== null;
-    if (step === 9) return selectedDays.length > 0;
+    if (step === 6) return selectedDays.length > 0;
+    if (step === 7) return name.trim().length > 1;
+    if (step === 9) return pushups !== null;
     return true;
   })();
 
@@ -459,7 +459,7 @@ function Onboarding() {
 
 
 
-        {step === 6 && (
+        {step === 7 && (
           <div className="animate-fade-in flex h-full flex-col">
             <h1 className="mt-8 font-display text-[32px] font-extrabold leading-tight tracking-tight">
               ¿Cómo deberíamos llamarte?
@@ -479,7 +479,7 @@ function Onboarding() {
 
 
 
-        {step === 7 && (
+        {step === 8 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -514,7 +514,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -550,7 +550,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && (
+        {step === 6 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
