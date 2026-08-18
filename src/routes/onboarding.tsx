@@ -364,6 +364,8 @@ function Onboarding() {
                 onChange={(kg) => setTargetWeight(String(Math.round(kg)))}
                 unit={weightUnit}
                 onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
+                minBase={currentWeight}
+                maxBase={maxTargetWeight}
                 options={[
                   { key: "lbs", label: "LB" },
                   { key: "kg", label: "KG" },
@@ -378,13 +380,80 @@ function Onboarding() {
                 <span className="text-primary">{gainPercent}%</span> de tu peso
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                {gainPercent > 0
-                  ? "Un objetivo realista, sigue así."
-                  : "Puedes subir hasta 20 kg sobre tu peso actual."}
+                Puedes fijar un objetivo de hasta {maxTargetWeight} kg (20 kg más que tu peso
+                actual).
               </p>
             </div>
           </div>
         )}
+
+        {step === 5 && (
+          <div className="animate-fade-in flex flex-col pt-2">
+            <h1 className="font-display text-center text-[28px] font-extrabold leading-tight">
+              Elija su equipo de entrenamiento preferido
+            </h1>
+            <p className="mx-auto mt-3 max-w-[320px] text-center text-sm text-muted-foreground">
+              Ofrecemos más de 800 ejercicios y 500 entrenamientos para una amplia variedad de
+              equipamiento.
+            </p>
+
+            <div className="mt-7 space-y-3">
+              {equipmentOptions.map((opt) => {
+                const active = equipment.includes(opt.id);
+                return (
+                  <div key={opt.id} className="space-y-3">
+                    <button
+                      onClick={() => toggleEquipment(opt.id)}
+                      className={`relative flex w-full items-center overflow-hidden rounded-3xl text-left transition-colors ${
+                        active ? "bg-primary" : "bg-muted"
+                      }`}
+                    >
+                      <div className="z-10 max-w-[55%] py-6 pl-5">
+                        <p
+                          className={`font-display text-lg font-bold ${
+                            active ? "text-primary-foreground" : "text-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                        </p>
+                        <p
+                          className={`text-sm ${
+                            active ? "text-primary-foreground/80" : "text-muted-foreground"
+                          }`}
+                        >
+                          {opt.desc}
+                        </p>
+                      </div>
+                      <img
+                        src={opt.image}
+                        alt={opt.label}
+                        loading="lazy"
+                        width={768}
+                        height={512}
+                        className="absolute right-0 top-0 h-full w-[52%] object-cover"
+                      />
+                    </button>
+
+                    {opt.id === "portatil" && active && (
+                      <div className="grid grid-cols-2 gap-3">
+                        {["Mancuerna", "Banda de resistencia"].map((t) => (
+                          <div
+                            key={t}
+                            className="flex items-center gap-2 rounded-2xl bg-muted px-4 py-3"
+                          >
+                            <Check size={16} className="shrink-0 text-foreground" />
+                            <span className="font-display text-sm font-semibold">{t}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
 
         {step === 6 && (
           <div className="flex flex-col">
