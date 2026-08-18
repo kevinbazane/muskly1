@@ -121,7 +121,7 @@ function Onboarding() {
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
 
 
-  const totalSteps = 11;
+  const totalSteps = 12;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
