@@ -1,6 +1,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Wheat, X } from "lucide-react";
+import {
+  Apple,
+  ArrowLeft,
+  Bell,
+  Check,
+  ChevronLeft,
+  Droplets,
+  Dumbbell,
+  Mars,
+  Transgender,
+  Venus,
+  Wheat,
+  X,
+  Zap,
+} from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import {
   computePlan,
@@ -12,6 +26,9 @@ import {
   type Sex,
 } from "@/lib/muskly";
 import nutritionHero from "@/assets/nutrition-onboarding.jpg";
+import goalLookBetter from "@/assets/goal-look-better.jpg";
+import goalStrength from "@/assets/goal-strength.jpg";
+import goalConfidence from "@/assets/goal-confidence.jpg";
 
 
 export const Route = createFileRoute("/onboarding")({
@@ -38,6 +55,20 @@ const goals: { id: Goal; label: string; desc: string }[] = [
   { id: "fuerza", label: "Ganar fuerza", desc: "Más peso en la barra, cuerpo sólido" },
   { id: "definicion", label: "Definir", desc: "Mantener músculo, marcar más" },
 ];
+
+const sexOptions: { id: Sex; label: string; icon: typeof Mars }[] = [
+  { id: "hombre", label: "Hombre", icon: Mars },
+  { id: "mujer", label: "Mujer", icon: Venus },
+  { id: "otro", label: "Prefiero no decir", icon: Transgender },
+];
+
+const goalCards: { id: Goal; label: string; image: string }[] = [
+  { id: "definicion", label: "Verse mejor en atuendos", image: goalLookBetter },
+  { id: "fuerza", label: "Construir fuerza", image: goalStrength },
+  { id: "volumen", label: "Aumentar la confianza y la energía", image: goalConfidence },
+];
+
+
 
 const levels: { id: Level; label: string; desc: string }[] = [
   { id: "principiante", label: "Principiante", desc: "Menos de 6 meses entrenando" },
@@ -90,7 +121,7 @@ function Onboarding() {
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
 
 
-  const totalSteps = 10;
+  const totalSteps = 11;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -107,11 +138,11 @@ function Onboarding() {
   };
 
   const canContinue = (() => {
-    if (step === 2) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
-    if (step === 3) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 6) return pushups !== null;
-    if (step === 7) return selectedDays.length > 0;
-    if (step === 8) return Number(targetWeight) > 30;
+    if (step === 3) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
+    if (step === 4) return Number(weight) > 30 && Number(height) > 100;
+    if (step === 7) return pushups !== null;
+    if (step === 8) return selectedDays.length > 0;
+    if (step === 9) return Number(targetWeight) > 30;
     return true;
   })();
 
@@ -132,53 +163,118 @@ function Onboarding() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-background">
-      <div className="flex items-center gap-3 px-5 pt-6">
-        {step > 0 ? (
-          <button
-            aria-label="Atrás"
-            onClick={() => setStep((s) => s - 1)}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-foreground"
-          >
-            <ArrowLeft size={18} />
-          </button>
-        ) : (
-          <div className="h-9 w-9 shrink-0" />
-        )}
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-300"
-            style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
-          />
+      <div className="px-5 pt-6">
+        <div className="grid grid-cols-[36px_minmax(0,1fr)_36px] items-center">
+          {step > 0 ? (
+            <button
+              aria-label="Atrás"
+              onClick={() => setStep((s) => s - 1)}
+              className="grid h-9 w-9 place-items-center rounded-full text-foreground"
+            >
+              <ChevronLeft size={26} />
+            </button>
+          ) : (
+            <span />
+          )}
+          <div className="flex items-center justify-center gap-2">
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
+              <Zap size={18} fill="currentColor" />
+            </span>
+            <span className="font-display text-xl font-extrabold italic tracking-tight text-foreground">
+              Muskly
+            </span>
+          </div>
+          {step === 4 ? (
+            <button
+              onClick={() => setStep((s) => s + 1)}
+              className="text-xs font-semibold tracking-wide text-muted-foreground"
+            >
+              OMITIR
+            </button>
+          ) : (
+            <span />
+          )}
         </div>
-        {step === 3 ? (
-          <button
-            onClick={() => setStep((s) => s + 1)}
-            className="shrink-0 text-sm font-semibold tracking-wide text-muted-foreground"
-          >
-            OMITIR
-          </button>
-        ) : (
-          <div className="h-9 w-9 shrink-0" />
-        )}
+
+        <StepProgress step={step} totalSteps={totalSteps} />
       </div>
 
-
-      <main className="flex-1 px-5 py-8">
+      <main className="flex-1 px-5 py-6">
         {step === 0 && (
-          <div className="flex h-full flex-col items-center justify-center text-center">
-            <div className="grid h-20 w-20 place-items-center rounded-3xl bg-primary text-primary-foreground shadow-[0_18px_40px_-18px_var(--primary)]">
-              <Dumbbell size={36} />
-            </div>
-            <h1 className="font-display mt-6 text-3xl font-bold">Bienvenido a Muskly</h1>
-            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Si te cuesta ganar peso, no estás roto: solo necesitas un plan hecho para ti. Vamos
-              paso a paso, con calma y sin milagros.
+          <div className="animate-fade-in">
+            <h1 className="font-display text-center text-[32px] font-extrabold leading-tight">
+              Comencemos con lo básico
+            </h1>
+            <p className="mx-auto mt-3 max-w-[300px] text-center text-base text-muted-foreground">
+              Adaptaremos tu plan según tu género para obtener mejores resultados.
             </p>
+
+            <div className="mt-8 space-y-4">
+              {sexOptions.map((option) => {
+                const Icon = option.icon;
+                const active = sex === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => {
+                      setSex(option.id);
+                      setStep(1);
+                    }}
+                    className={`flex w-full items-center gap-5 rounded-3xl px-6 py-7 text-left transition-colors ${
+                      active ? "bg-primary/10 ring-2 ring-primary" : "bg-muted"
+                    }`}
+                  >
+                    <Icon size={30} className="shrink-0 text-foreground" strokeWidth={2.2} />
+                    <span className="font-display text-xl font-bold text-foreground">
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div className="animate-fade-in">
+            <h1 className="font-display text-center text-[28px] font-extrabold leading-tight">
+              ¿Cuál es tu objetivo principal para ganar músculo?
+            </h1>
+
+            <div className="mt-8 space-y-4">
+              {goalCards.map((g) => {
+                const active = goal === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    onClick={() => setGoal(g.id)}
+                    className={`relative flex h-[132px] w-full items-center overflow-hidden rounded-3xl text-left transition-colors ${
+                      active ? "bg-primary/10 ring-2 ring-primary" : "bg-muted"
+                    }`}
+                  >
+                    <span className="relative z-10 max-w-[58%] pl-6 font-display text-xl font-bold leading-snug text-foreground">
+                      {g.label}
+                    </span>
+                    <img
+                      src={g.image}
+                      alt=""
+                      aria-hidden
+                      loading="lazy"
+                      width={768}
+                      height={768}
+                      className="absolute right-0 top-0 h-full w-[46%] object-cover object-top [mask-image:linear-gradient(to_right,transparent,black_28%)]"
+                    />
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
 
-        {step === 1 && (
+
+
+        {step === 2 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -226,7 +322,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -245,15 +341,10 @@ function Onboarding() {
                 className="input-muskly"
               />
             </Field>
-            <div className="grid grid-cols-3 gap-2">
-              {(["hombre", "mujer", "otro"] as Sex[]).map((s) => (
-                <Chip key={s} active={sex === s} onClick={() => setSex(s)} label={s} />
-              ))}
-            </div>
           </Step>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <div className="animate-fade-in space-y-8 pt-4">
             <div className="text-center">
               <h1 className="font-display text-[28px] font-bold leading-tight">
@@ -292,7 +383,7 @@ function Onboarding() {
         )}
 
 
-        {step === 4 && (
+        {step === 5 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -308,7 +399,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -343,7 +434,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -379,7 +470,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -443,7 +534,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -468,21 +559,59 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 10 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <button
-          disabled={!canContinue}
-          onClick={next}
-          className="w-full rounded-2xl bg-primary py-4 font-display text-base font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--primary)] transition-opacity disabled:opacity-40"
-        >
-          {step === 0 ? "Empezar" : step === totalSteps - 1 ? "Ir a mi diario" : "Continuar"}
-        </button>
+        {step === 0 ? (
+          <p className="text-center text-sm text-muted-foreground">
+            ¿Ya tienes una cuenta?{" "}
+            <span className="font-semibold text-primary underline underline-offset-4">
+              Iniciar sesión
+            </span>
+          </p>
+        ) : (
+          <button
+            disabled={!canContinue}
+            onClick={next}
+            className="w-full rounded-2xl bg-primary py-4 font-display text-base font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--primary)] transition-opacity disabled:opacity-40"
+          >
+            {step === totalSteps - 1 ? "Ir a mi diario" : "Continuar"}
+          </button>
+        )}
       </div>
     </div>
   );
 }
+
+function StepProgress({ step, totalSteps }: { step: number; totalSteps: number }) {
+  const segments = 5;
+  const progress = (step + 1) / totalSteps;
+  return (
+    <div className="mt-5 flex items-center">
+      {Array.from({ length: segments }).map((_, i) => {
+        const start = i / segments;
+        const fill = Math.min(Math.max((progress - start) * segments, 0), 1);
+        return (
+          <div key={i} className="flex flex-1 items-center last:flex-none">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${fill * 100}%` }}
+              />
+            </div>
+            <span
+              className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                progress >= (i + 1) / segments ? "bg-primary" : "bg-muted"
+              }`}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 
 function Step({
   title,
