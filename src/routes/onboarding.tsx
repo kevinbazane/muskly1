@@ -149,50 +149,115 @@ function Onboarding() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-background">
-      <div className="flex items-center gap-3 px-5 pt-6">
-        {step > 0 ? (
-          <button
-            aria-label="Atrás"
-            onClick={() => setStep((s) => s - 1)}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-foreground"
-          >
-            <ArrowLeft size={18} />
-          </button>
-        ) : (
-          <div className="h-9 w-9 shrink-0" />
-        )}
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-300"
-            style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
-          />
+      <div className="px-5 pt-6">
+        <div className="grid grid-cols-[36px_minmax(0,1fr)_36px] items-center">
+          {step > 0 ? (
+            <button
+              aria-label="Atrás"
+              onClick={() => setStep((s) => s - 1)}
+              className="grid h-9 w-9 place-items-center rounded-full text-foreground"
+            >
+              <ChevronLeft size={26} />
+            </button>
+          ) : (
+            <span />
+          )}
+          <div className="flex items-center justify-center gap-2">
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
+              <Zap size={18} fill="currentColor" />
+            </span>
+            <span className="font-display text-xl font-extrabold italic tracking-tight text-foreground">
+              Muskly
+            </span>
+          </div>
+          {step === 4 ? (
+            <button
+              onClick={() => setStep((s) => s + 1)}
+              className="text-xs font-semibold tracking-wide text-muted-foreground"
+            >
+              OMITIR
+            </button>
+          ) : (
+            <span />
+          )}
         </div>
-        {step === 4 ? (
-          <button
-            onClick={() => setStep((s) => s + 1)}
-            className="shrink-0 text-sm font-semibold tracking-wide text-muted-foreground"
-          >
-            OMITIR
-          </button>
-        ) : (
-          <div className="h-9 w-9 shrink-0" />
-        )}
+
+        <StepProgress step={step} totalSteps={totalSteps} />
       </div>
 
-
-      <main className="flex-1 px-5 py-8">
+      <main className="flex-1 px-5 py-6">
         {step === 0 && (
-          <div className="flex h-full flex-col items-center justify-center text-center">
-            <div className="grid h-20 w-20 place-items-center rounded-3xl bg-primary text-primary-foreground shadow-[0_18px_40px_-18px_var(--primary)]">
-              <Dumbbell size={36} />
-            </div>
-            <h1 className="font-display mt-6 text-3xl font-bold">Bienvenido a Muskly</h1>
-            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Si te cuesta ganar peso, no estás roto: solo necesitas un plan hecho para ti. Vamos
-              paso a paso, con calma y sin milagros.
+          <div className="animate-fade-in">
+            <h1 className="font-display text-center text-[32px] font-extrabold leading-tight">
+              Comencemos con lo básico
+            </h1>
+            <p className="mx-auto mt-3 max-w-[300px] text-center text-base text-muted-foreground">
+              Adaptaremos tu plan según tu género para obtener mejores resultados.
             </p>
+
+            <div className="mt-8 space-y-4">
+              {sexOptions.map((option) => {
+                const Icon = option.icon;
+                const active = sex === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => {
+                      setSex(option.id);
+                      setStep(1);
+                    }}
+                    className={`flex w-full items-center gap-5 rounded-3xl px-6 py-7 text-left transition-colors ${
+                      active ? "bg-primary/10 ring-2 ring-primary" : "bg-muted"
+                    }`}
+                  >
+                    <Icon size={30} className="shrink-0 text-foreground" strokeWidth={2.2} />
+                    <span className="font-display text-xl font-bold text-foreground">
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
+
+        {step === 1 && (
+          <div className="animate-fade-in">
+            <h1 className="font-display text-center text-[28px] font-extrabold leading-tight">
+              ¿Cuál es tu objetivo principal para ganar músculo?
+            </h1>
+
+            <div className="mt-8 space-y-4">
+              {goalCards.map((g) => {
+                const active = goal === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    onClick={() => setGoal(g.id)}
+                    className={`relative flex h-[132px] w-full items-center overflow-hidden rounded-3xl text-left transition-colors ${
+                      active ? "bg-primary/10 ring-2 ring-primary" : "bg-muted"
+                    }`}
+                  >
+                    <span className="relative z-10 max-w-[58%] pl-6 font-display text-xl font-bold leading-snug text-foreground">
+                      {g.label}
+                    </span>
+                    <img
+                      src={g.image}
+                      alt=""
+                      aria-hidden
+                      loading="lazy"
+                      width={768}
+                      height={768}
+                      className="absolute right-0 top-0 h-full w-[46%] object-cover object-top [mask-image:linear-gradient(to_right,transparent,black_28%)]"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+
 
 
         {step === 2 && (
