@@ -29,6 +29,9 @@ import nutritionHero from "@/assets/nutrition-onboarding.jpg";
 import goalLookBetter from "@/assets/goal-look-better.jpg";
 import goalStrength from "@/assets/goal-strength.jpg";
 import goalConfidence from "@/assets/goal-confidence.jpg";
+import equipBodyweight from "@/assets/equip-bodyweight.jpg";
+import equipPortable from "@/assets/equip-portable.jpg";
+import equipGym from "@/assets/equip-gym.jpg";
 
 
 export const Route = createFileRoute("/onboarding")({
@@ -66,6 +69,12 @@ const goalCards: { id: Goal; label: string; image: string }[] = [
   { id: "definicion", label: "Verse mejor en atuendos", image: goalLookBetter },
   { id: "fuerza", label: "Construir fuerza", image: goalStrength },
   { id: "volumen", label: "Aumentar la confianza y la energía", image: goalConfidence },
+];
+
+const equipmentOptions: { id: string; label: string; desc: string; image: string }[] = [
+  { id: "corporal", label: "Peso corporal", desc: "Entrenamiento corporal.", image: equipBodyweight },
+  { id: "portatil", label: "Equipo portátil", desc: "mancuernas, etc.", image: equipPortable },
+  { id: "gimnasio", label: "Gimnasio", desc: "Máquina Smith, etc.", image: equipGym },
 ];
 
 
@@ -119,9 +128,9 @@ function Onboarding() {
   const [targetWeight, setTargetWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
+  const [equipment, setEquipment] = useState<string[]>(["portatil"]);
 
-
-  const totalSteps = 12;
+  const totalSteps = 13;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -138,7 +147,11 @@ function Onboarding() {
   };
 
   const currentWeight = Number(weight) || 60;
-  const targetWeightValue = Number(targetWeight) || currentWeight;
+  const maxTargetWeight = currentWeight + 20;
+  const targetWeightValue = Math.min(
+    maxTargetWeight,
+    Math.max(currentWeight, Number(targetWeight) || currentWeight),
+  );
   const gainPercent = Math.max(
     0,
     Math.round(((targetWeightValue - currentWeight) / currentWeight) * 100),
@@ -148,11 +161,19 @@ function Onboarding() {
     if (step === 2) return Number(age) >= 12 && Number(age) < 100;
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
     if (step === 4) return targetWeightValue > 30;
-    if (step === 6) return name.trim().length > 1;
-    if (step === 9) return pushups !== null;
-    if (step === 10) return selectedDays.length > 0;
+    if (step === 5) return equipment.length > 0;
+    if (step === 7) return name.trim().length > 1;
+    if (step === 10) return pushups !== null;
+    if (step === 11) return selectedDays.length > 0;
     return true;
   })();
+
+  function toggleEquipment(id: string) {
+    setEquipment((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id],
+    );
+  }
+
 
   function toggleDay(day: string) {
     setSelectedDays((prev) =>
@@ -349,6 +370,8 @@ function Onboarding() {
                 onChange={(kg) => setTargetWeight(String(Math.round(kg)))}
                 unit={weightUnit}
                 onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
+                minBase={currentWeight}
+                maxBase={maxTargetWeight}
                 options={[
                   { key: "lbs", label: "LB" },
                   { key: "kg", label: "KG" },
@@ -363,15 +386,82 @@ function Onboarding() {
                 <span className="text-primary">{gainPercent}%</span> de tu peso
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                {gainPercent > 0
-                  ? "Un objetivo realista, sigue así."
-                  : "Puedes subir hasta 20 kg sobre tu peso actual."}
+                Puedes fijar un objetivo de hasta {maxTargetWeight} kg (20 kg más que tu peso
+                actual).
               </p>
             </div>
           </div>
         )}
 
         {step === 5 && (
+          <div className="animate-fade-in flex flex-col pt-2">
+            <h1 className="font-display text-center text-[28px] font-extrabold leading-tight">
+              Elija su equipo de entrenamiento preferido
+            </h1>
+            <p className="mx-auto mt-3 max-w-[320px] text-center text-sm text-muted-foreground">
+              Ofrecemos más de 800 ejercicios y 500 entrenamientos para una amplia variedad de
+              equipamiento.
+            </p>
+
+            <div className="mt-7 space-y-3">
+              {equipmentOptions.map((opt) => {
+                const active = equipment.includes(opt.id);
+                return (
+                  <div key={opt.id} className="space-y-3">
+                    <button
+                      onClick={() => toggleEquipment(opt.id)}
+                      className={`relative flex w-full items-center overflow-hidden rounded-3xl text-left transition-colors ${
+                        active ? "bg-primary" : "bg-muted"
+                      }`}
+                    >
+                      <div className="z-10 max-w-[55%] py-6 pl-5">
+                        <p
+                          className={`font-display text-lg font-bold ${
+                            active ? "text-primary-foreground" : "text-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                        </p>
+                        <p
+                          className={`text-sm ${
+                            active ? "text-primary-foreground/80" : "text-muted-foreground"
+                          }`}
+                        >
+                          {opt.desc}
+                        </p>
+                      </div>
+                      <img
+                        src={opt.image}
+                        alt={opt.label}
+                        loading="lazy"
+                        width={768}
+                        height={512}
+                        className="absolute right-0 top-0 h-full w-[52%] object-cover"
+                      />
+                    </button>
+
+                    {opt.id === "portatil" && active && (
+                      <div className="grid grid-cols-2 gap-3">
+                        {["Mancuerna", "Banda de resistencia"].map((t) => (
+                          <div
+                            key={t}
+                            className="flex items-center gap-2 rounded-2xl bg-muted px-4 py-3"
+                          >
+                            <Check size={16} className="shrink-0 text-foreground" />
+                            <span className="font-display text-sm font-semibold">{t}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+
+        {step === 6 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -419,7 +509,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -434,7 +524,7 @@ function Onboarding() {
 
 
 
-        {step === 7 && (
+        {step === 8 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -450,7 +540,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -485,7 +575,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && (
+        {step === 10 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -521,7 +611,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 10 && (
+        {step === 11 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -585,7 +675,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 11 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 12 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
@@ -812,6 +902,8 @@ function RulerSelector({
   unit,
   onUnitChange,
   options,
+  minBase,
+  maxBase,
 }: {
   label: string;
   value: number;
@@ -819,11 +911,26 @@ function RulerSelector({
   unit: string;
   onUnitChange: (unit: string) => void;
   options: { key: string; label: string }[];
+  minBase?: number;
+  maxBase?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isProgrammaticScroll = useRef(false);
   const [containerWidth, setContainerWidth] = useState(0);
-  const config = unitConfig[unit]!;
+  const baseConfig = unitConfig[unit]!;
+  const config = useMemo(() => {
+    let min = baseConfig.min;
+    let max = baseConfig.max;
+    if (minBase != null) {
+      min = Math.max(min, Math.ceil(fromBase(minBase, unit) / baseConfig.step) * baseConfig.step);
+    }
+    if (maxBase != null) {
+      max = Math.min(max, Math.floor(fromBase(maxBase, unit) / baseConfig.step) * baseConfig.step);
+    }
+    if (max < min) max = min;
+    return { ...baseConfig, min, max };
+  }, [baseConfig, minBase, maxBase, unit]);
+
 
   const values = useMemo(() => {
     const arr: number[] = [];
