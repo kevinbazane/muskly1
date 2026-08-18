@@ -568,17 +568,55 @@ function Onboarding() {
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <button
-          disabled={!canContinue}
-          onClick={next}
-          className="w-full rounded-2xl bg-primary py-4 font-display text-base font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--primary)] transition-opacity disabled:opacity-40"
-        >
-          {step === 0 ? "Empezar" : step === totalSteps - 1 ? "Ir a mi diario" : "Continuar"}
-        </button>
+        {step === 0 ? (
+          <p className="text-center text-sm text-muted-foreground">
+            ¿Ya tienes una cuenta?{" "}
+            <span className="font-semibold text-primary underline underline-offset-4">
+              Iniciar sesión
+            </span>
+          </p>
+        ) : (
+          <button
+            disabled={!canContinue}
+            onClick={next}
+            className="w-full rounded-2xl bg-primary py-4 font-display text-base font-semibold text-primary-foreground shadow-[0_16px_36px_-18px_var(--primary)] transition-opacity disabled:opacity-40"
+          >
+            {step === totalSteps - 1 ? "Ir a mi diario" : "Continuar"}
+          </button>
+        )}
       </div>
     </div>
   );
 }
+
+function StepProgress({ step, totalSteps }: { step: number; totalSteps: number }) {
+  const segments = 5;
+  const progress = (step + 1) / totalSteps;
+  return (
+    <div className="mt-5 flex items-center">
+      {Array.from({ length: segments }).map((_, i) => {
+        const start = i / segments;
+        const fill = Math.min(Math.max((progress - start) * segments, 0), 1);
+        return (
+          <div key={i} className="flex flex-1 items-center last:flex-none">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${fill * 100}%` }}
+              />
+            </div>
+            <span
+              className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                progress >= (i + 1) / segments ? "bg-primary" : "bg-muted"
+              }`}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 
 function Step({
   title,
