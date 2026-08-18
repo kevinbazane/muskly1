@@ -105,7 +105,7 @@ function Onboarding() {
   const { setProfile } = useProfile();
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState("30");
   const [sex, setSex] = useState<Sex>("hombre");
   const [weight, setWeight] = useState("63");
   const [height, setHeight] = useState("168");
@@ -137,13 +137,20 @@ function Onboarding() {
     createdAt: new Date().toISOString(),
   };
 
+  const currentWeight = Number(weight) || 60;
+  const targetWeightValue = Number(targetWeight) || currentWeight;
+  const gainPercent = Math.max(
+    0,
+    Math.round(((targetWeightValue - currentWeight) / currentWeight) * 100),
+  );
+
   const canContinue = (() => {
     if (step === 2) return Number(age) >= 12 && Number(age) < 100;
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 5) return name.trim().length > 1;
-    if (step === 8) return pushups !== null;
-    if (step === 9) return selectedDays.length > 0;
-    if (step === 10) return Number(targetWeight) > 30;
+    if (step === 4) return targetWeightValue > 30;
+    if (step === 6) return name.trim().length > 1;
+    if (step === 9) return pushups !== null;
+    if (step === 10) return selectedDays.length > 0;
     return true;
   })();
 
@@ -330,6 +337,41 @@ function Onboarding() {
         )}
 
         {step === 4 && (
+          <div className="animate-fade-in flex flex-col pt-2">
+            <h1 className="font-display text-center text-[30px] font-extrabold leading-tight">
+              Tu peso objetivo
+            </h1>
+
+            <div className="mt-8">
+              <RulerSelector
+                label=""
+                value={targetWeightValue}
+                onChange={(kg) => setTargetWeight(String(Math.round(kg)))}
+                unit={weightUnit}
+                onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
+                options={[
+                  { key: "lbs", label: "LB" },
+                  { key: "kg", label: "KG" },
+                ]}
+              />
+            </div>
+
+            <div className="mt-8 rounded-2xl border border-border p-5">
+              <p className="font-display text-base font-bold leading-snug text-foreground">
+                {"\u{1F44C} "}
+                {gainPercent > 0 ? "Ganar fácilmente, subirás " : "Mantendrás "}
+                <span className="text-primary">{gainPercent}%</span> de tu peso
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {gainPercent > 0
+                  ? "Un objetivo realista, sigue así."
+                  : "Puedes subir hasta 20 kg sobre tu peso actual."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {step === 5 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -377,7 +419,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -392,7 +434,7 @@ function Onboarding() {
 
 
 
-        {step === 6 && (
+        {step === 7 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -408,7 +450,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -443,7 +485,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -479,7 +521,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && (
+        {step === 10 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -540,31 +582,6 @@ function Onboarding() {
                 />
               </button>
             </div>
-          </Step>
-        )}
-
-        {step === 10 && (
-          <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
-            <div className="space-y-3">
-              {goals.map((g) => (
-                <OptionCard
-                  key={g.id}
-                  active={goal === g.id}
-                  onClick={() => setGoal(g.id)}
-                  title={g.label}
-                  desc={g.desc}
-                />
-              ))}
-            </div>
-            <Field label="Peso meta (kg)">
-              <input
-                value={targetWeight}
-                onChange={(e) => setTargetWeight(e.target.value.replace(/\D/g, ""))}
-                inputMode="numeric"
-                placeholder="66"
-                className="input-muskly"
-              />
-            </Field>
           </Step>
         )}
 
