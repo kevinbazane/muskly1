@@ -121,7 +121,7 @@ function Onboarding() {
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
 
 
-  const totalSteps = 11;
+  const totalSteps = 12;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -138,11 +138,12 @@ function Onboarding() {
   };
 
   const canContinue = (() => {
-    if (step === 3) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
-    if (step === 4) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 7) return pushups !== null;
-    if (step === 8) return selectedDays.length > 0;
-    if (step === 9) return Number(targetWeight) > 30;
+    if (step === 2) return Number(age) >= 12 && Number(age) < 100;
+    if (step === 3) return Number(weight) > 30 && Number(height) > 100;
+    if (step === 5) return name.trim().length > 1;
+    if (step === 8) return pushups !== null;
+    if (step === 9) return selectedDays.length > 0;
+    if (step === 10) return Number(targetWeight) > 30;
     return true;
   })();
 
@@ -184,7 +185,7 @@ function Onboarding() {
               Muskly
             </span>
           </div>
-          {step === 4 ? (
+          {step === 3 ? (
             <button
               onClick={() => setStep((s) => s + 1)}
               className="text-xs font-semibold tracking-wide text-muted-foreground"
@@ -275,6 +276,60 @@ function Onboarding() {
 
 
         {step === 2 && (
+          <div className="animate-fade-in flex flex-col">
+            <h1 className="font-display text-center text-[32px] font-extrabold leading-tight">
+              Tu edad
+            </h1>
+            <p className="mx-auto mt-3 max-w-[300px] text-center text-base text-muted-foreground">
+              La información sobre la edad nos ayuda a evaluar de manera más precisa tu nivel
+              metabólico
+            </p>
+
+            <AgeWheel
+              value={Number(age) || 30}
+              onChange={(n) => setAge(String(n))}
+            />
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="animate-fade-in space-y-8 pt-4">
+            <div className="text-center">
+              <h1 className="font-display text-[28px] font-bold leading-tight">
+                Cuéntanos más sobre ti
+              </h1>
+              <p className="mx-auto mt-2 max-w-[280px] text-sm text-muted-foreground">
+                Déjanos conocerte mejor para potenciar los resultados de tu entrenamiento
+              </p>
+            </div>
+
+            <RulerSelector
+              label="Peso"
+              value={Number(weight) || 0}
+              onChange={(kg) => setWeight(String(Math.round(kg)))}
+              unit={weightUnit}
+              onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
+              options={[
+                { key: "kg", label: "kg" },
+                { key: "lbs", label: "lbs" },
+              ]}
+            />
+
+            <RulerSelector
+              label="Altura"
+              value={Number(height) || 0}
+              onChange={(cm) => setHeight(String(Math.round(cm)))}
+              unit={heightUnit}
+              onUnitChange={(u) => setHeightUnit(u as "cm" | "ft")}
+              options={[
+                { key: "cm", label: "cm" },
+                { key: "ft", label: "ft" },
+              ]}
+            />
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -322,7 +377,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 5 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -332,58 +387,12 @@ function Onboarding() {
                 className="input-muskly"
               />
             </Field>
-            <Field label="Edad">
-              <input
-                value={age}
-                onChange={(e) => setAge(e.target.value.replace(/\D/g, ""))}
-                inputMode="numeric"
-                placeholder="24"
-                className="input-muskly"
-              />
-            </Field>
           </Step>
         )}
 
-        {step === 4 && (
-          <div className="animate-fade-in space-y-8 pt-4">
-            <div className="text-center">
-              <h1 className="font-display text-[28px] font-bold leading-tight">
-                Cuéntanos más sobre ti
-              </h1>
-              <p className="mx-auto mt-2 max-w-[280px] text-sm text-muted-foreground">
-                Déjanos conocerte mejor para potenciar los resultados de tu entrenamiento
-              </p>
-            </div>
-
-            <RulerSelector
-              label="Peso"
-              value={Number(weight) || 0}
-              onChange={(kg) => setWeight(String(Math.round(kg)))}
-              unit={weightUnit}
-              onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
-              options={[
-                { key: "kg", label: "kg" },
-                { key: "lbs", label: "lbs" },
-              ]}
-            />
-
-            <RulerSelector
-              label="Altura"
-              value={Number(height) || 0}
-              onChange={(cm) => setHeight(String(Math.round(cm)))}
-              unit={heightUnit}
-              onUnitChange={(u) => setHeightUnit(u as "cm" | "ft")}
-              options={[
-                { key: "cm", label: "cm" },
-                { key: "ft", label: "ft" },
-              ]}
-            />
-
-          </div>
-        )}
 
 
-        {step === 5 && (
+        {step === 6 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -399,7 +408,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -434,7 +443,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -470,7 +479,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -534,7 +543,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && (
+        {step === 10 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -559,7 +568,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 10 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 11 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
@@ -931,3 +940,59 @@ function RulerSelector({
   );
 }
 
+
+function AgeWheel({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const ITEM = 76;
+  const ages = Array.from({ length: 89 }, (_, i) => i + 12);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (el) el.scrollTop = (value - 12) * ITEM;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="relative mt-10">
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-[76px] -translate-y-1/2 rounded-3xl bg-muted" />
+      <div
+        ref={ref}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          const idx = Math.min(Math.max(Math.round(el.scrollTop / ITEM), 0), ages.length - 1);
+          const next = ages[idx];
+          if (next !== value) onChange(next);
+        }}
+        className="relative h-[380px] snap-y snap-mandatory overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{ scrollPaddingTop: 152 }}
+      >
+        <div style={{ height: 152 }} />
+        {ages.map((a) => {
+          const active = a === value;
+          return (
+            <div
+              key={a}
+              onClick={() => onChange(a)}
+              className="flex snap-center items-center justify-center gap-3"
+              style={{ height: ITEM }}
+            >
+              <span
+                className={`font-display tabular-nums transition-all ${
+                  active
+                    ? "text-[44px] font-extrabold text-foreground"
+                    : "text-[38px] font-bold text-muted-foreground/60"
+                }`}
+              >
+                {a}
+              </span>
+              {active && (
+                <span className="font-display text-lg font-semibold text-foreground">años</span>
+              )}
+            </div>
+          );
+        })}
+        <div style={{ height: 152 }} />
+      </div>
+    </div>
+  );
+}
