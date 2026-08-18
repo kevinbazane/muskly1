@@ -29,6 +29,9 @@ import nutritionHero from "@/assets/nutrition-onboarding.jpg";
 import goalLookBetter from "@/assets/goal-look-better.jpg";
 import goalStrength from "@/assets/goal-strength.jpg";
 import goalConfidence from "@/assets/goal-confidence.jpg";
+import equipBodyweight from "@/assets/equip-bodyweight.jpg";
+import equipPortable from "@/assets/equip-portable.jpg";
+import equipGym from "@/assets/equip-gym.jpg";
 
 
 export const Route = createFileRoute("/onboarding")({
