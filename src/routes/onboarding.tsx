@@ -479,7 +479,7 @@ function Onboarding() {
 
 
 
-        {step === 7 && (
+        {step === 8 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
