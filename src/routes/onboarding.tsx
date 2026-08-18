@@ -275,6 +275,60 @@ function Onboarding() {
 
 
         {step === 2 && (
+          <div className="animate-fade-in flex flex-col">
+            <h1 className="font-display text-center text-[32px] font-extrabold leading-tight">
+              Tu edad
+            </h1>
+            <p className="mx-auto mt-3 max-w-[300px] text-center text-base text-muted-foreground">
+              La información sobre la edad nos ayuda a evaluar de manera más precisa tu nivel
+              metabólico
+            </p>
+
+            <AgeWheel
+              value={Number(age) || 30}
+              onChange={(n) => setAge(String(n))}
+            />
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="animate-fade-in space-y-8 pt-4">
+            <div className="text-center">
+              <h1 className="font-display text-[28px] font-bold leading-tight">
+                Cuéntanos más sobre ti
+              </h1>
+              <p className="mx-auto mt-2 max-w-[280px] text-sm text-muted-foreground">
+                Déjanos conocerte mejor para potenciar los resultados de tu entrenamiento
+              </p>
+            </div>
+
+            <RulerSelector
+              label="Peso"
+              value={Number(weight) || 0}
+              onChange={(kg) => setWeight(String(Math.round(kg)))}
+              unit={weightUnit}
+              onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
+              options={[
+                { key: "kg", label: "kg" },
+                { key: "lbs", label: "lbs" },
+              ]}
+            />
+
+            <RulerSelector
+              label="Altura"
+              value={Number(height) || 0}
+              onChange={(cm) => setHeight(String(Math.round(cm)))}
+              unit={heightUnit}
+              onUnitChange={(u) => setHeightUnit(u as "cm" | "ft")}
+              options={[
+                { key: "cm", label: "cm" },
+                { key: "ft", label: "ft" },
+              ]}
+            />
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -322,7 +376,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 5 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -332,55 +386,9 @@ function Onboarding() {
                 className="input-muskly"
               />
             </Field>
-            <Field label="Edad">
-              <input
-                value={age}
-                onChange={(e) => setAge(e.target.value.replace(/\D/g, ""))}
-                inputMode="numeric"
-                placeholder="24"
-                className="input-muskly"
-              />
-            </Field>
           </Step>
         )}
 
-        {step === 4 && (
-          <div className="animate-fade-in space-y-8 pt-4">
-            <div className="text-center">
-              <h1 className="font-display text-[28px] font-bold leading-tight">
-                Cuéntanos más sobre ti
-              </h1>
-              <p className="mx-auto mt-2 max-w-[280px] text-sm text-muted-foreground">
-                Déjanos conocerte mejor para potenciar los resultados de tu entrenamiento
-              </p>
-            </div>
-
-            <RulerSelector
-              label="Peso"
-              value={Number(weight) || 0}
-              onChange={(kg) => setWeight(String(Math.round(kg)))}
-              unit={weightUnit}
-              onUnitChange={(u) => setWeightUnit(u as "kg" | "lbs")}
-              options={[
-                { key: "kg", label: "kg" },
-                { key: "lbs", label: "lbs" },
-              ]}
-            />
-
-            <RulerSelector
-              label="Altura"
-              value={Number(height) || 0}
-              onChange={(cm) => setHeight(String(Math.round(cm)))}
-              unit={heightUnit}
-              onUnitChange={(u) => setHeightUnit(u as "cm" | "ft")}
-              options={[
-                { key: "cm", label: "cm" },
-                { key: "ft", label: "ft" },
-              ]}
-            />
-
-          </div>
-        )}
 
 
         {step === 5 && (
