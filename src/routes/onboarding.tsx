@@ -459,7 +459,7 @@ function Onboarding() {
 
 
 
-        {step === 6 && (
+        {step === 7 && (
           <div className="animate-fade-in flex h-full flex-col">
             <h1 className="mt-8 font-display text-[32px] font-extrabold leading-tight tracking-tight">
               ¿Cómo deberíamos llamarte?
