@@ -960,7 +960,7 @@ function AgeWheel({ value, onChange }: { value: number; onChange: (n: number) =>
         onScroll={(e) => {
           const el = e.currentTarget;
           const idx = Math.min(Math.max(Math.round(el.scrollTop / ITEM), 0), ages.length - 1);
-          const next = ages[idx];
+          const next = ages[idx] ?? value;
           if (next !== value) onChange(next);
         }}
         className="relative h-[380px] snap-y snap-mandatory overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
