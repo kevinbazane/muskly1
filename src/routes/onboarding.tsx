@@ -11,7 +11,6 @@ import {
   Mars,
   Venus,
   Wheat,
-  X,
   Zap,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
