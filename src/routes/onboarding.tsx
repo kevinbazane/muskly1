@@ -1,6 +1,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Apple, ArrowLeft, Bell, Check, Droplets, Dumbbell, Wheat, X } from "lucide-react";
+import {
+  Apple,
+  ArrowLeft,
+  Bell,
+  Check,
+  ChevronLeft,
+  Droplets,
+  Dumbbell,
+  Mars,
+  Transgender,
+  Venus,
+  Wheat,
+  X,
+  Zap,
+} from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
 import {
   computePlan,
@@ -12,6 +26,9 @@ import {
   type Sex,
 } from "@/lib/muskly";
 import nutritionHero from "@/assets/nutrition-onboarding.jpg";
+import goalLookBetter from "@/assets/goal-look-better.jpg";
+import goalStrength from "@/assets/goal-strength.jpg";
+import goalConfidence from "@/assets/goal-confidence.jpg";
 
 
 export const Route = createFileRoute("/onboarding")({
