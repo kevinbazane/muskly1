@@ -9,10 +9,8 @@ import {
   Droplets,
   Dumbbell,
   Mars,
-  Transgender,
   Venus,
   Wheat,
-  X,
   Zap,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useMuskly";
@@ -62,7 +60,6 @@ const goals: { id: Goal; label: string; desc: string }[] = [
 const sexOptions: { id: Sex; label: string; icon: typeof Mars }[] = [
   { id: "hombre", label: "Hombre", icon: Mars },
   { id: "mujer", label: "Mujer", icon: Venus },
-  { id: "otro", label: "Prefiero no decir", icon: Transgender },
 ];
 
 const goalCards: { id: Goal; label: string; image: string }[] = [
@@ -130,7 +127,7 @@ function Onboarding() {
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
   const [equipment, setEquipment] = useState<string[]>(["portatil"]);
 
-  const totalSteps = 13;
+  const totalSteps = 11;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -162,9 +159,9 @@ function Onboarding() {
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
     if (step === 4) return targetWeightValue > 30;
     if (step === 5) return equipment.length > 0;
-    if (step === 7) return name.trim().length > 1;
-    if (step === 10) return pushups !== null;
-    if (step === 11) return selectedDays.length > 0;
+    if (step === 6) return name.trim().length > 1;
+    if (step === 8) return pushups !== null;
+    if (step === 9) return selectedDays.length > 0;
     return true;
   })();
 
@@ -461,55 +458,8 @@ function Onboarding() {
         )}
 
 
+
         {step === 6 && (
-          <div className="flex flex-col">
-            <h1 className="font-display text-3xl font-bold leading-tight">
-              Construye tus músculos{" "}
-              <span className="text-primary">más rápido, seguro y efectivo!</span>
-            </h1>
-
-            <div className="mt-8 grid grid-cols-2 items-end gap-3">
-              <div className="rounded-3xl bg-muted p-5">
-                <p className="font-display text-center text-base font-semibold text-muted-foreground">
-                  Otros planes
-                </p>
-                <ul className="mt-4 space-y-3">
-                  {["Sin resultados", "Talla única para todos", "Fácil de recaer", "Difícil de hacer"].map(
-                    (t) => (
-                      <li key={t} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <X size={16} className="mt-0.5 shrink-0" />
-                        <span>{t}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-
-              <div className="rounded-3xl bg-primary p-5 shadow-[0_20px_40px_-20px_var(--primary)]">
-                <p className="font-display text-center text-lg font-bold text-primary-foreground">
-                  Nuestro Plan
-                </p>
-                <ul className="mt-4 space-y-3">
-                  {["Cambios visibles", "Personalizado", "Sostenible", "Fácil de seguir"].map((t) => (
-                    <li
-                      key={t}
-                      className="flex items-start gap-2 text-sm font-medium text-primary-foreground"
-                    >
-                      <Check size={16} className="mt-0.5 shrink-0" />
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              Un plan hecho a tu medida, con progresión real y sin atajos.
-            </p>
-          </div>
-        )}
-
-        {step === 7 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -524,23 +474,8 @@ function Onboarding() {
 
 
 
-        {step === 8 && (
-          <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
-            <div className="space-y-3">
-              {levels.map((l) => (
-                <OptionCard
-                  key={l.id}
-                  active={level === l.id}
-                  onClick={() => setLevel(l.id)}
-                  title={l.label}
-                  desc={l.desc}
-                />
-              ))}
-            </div>
-          </Step>
-        )}
 
-        {step === 9 && (
+        {step === 7 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -575,7 +510,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 10 && (
+        {step === 8 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -611,7 +546,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 11 && (
+        {step === 9 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -675,7 +610,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 12 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 10 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
@@ -958,7 +893,7 @@ function RulerSelector({
     if (!containerRef.current) return;
     const index = Math.round((target - config.min) / config.step);
     const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
-    const scrollLeft = clampedIndex * config.tickWidth - containerWidth / 2 + config.tickWidth / 2;
+    const scrollLeft = clampedIndex * config.tickWidth + config.tickWidth / 2;
     isProgrammaticScroll.current = true;
     containerRef.current.scrollTo({ left: scrollLeft, behavior: "auto" });
     window.setTimeout(() => {
@@ -982,7 +917,7 @@ function RulerSelector({
   const handleScroll = () => {
     if (isProgrammaticScroll.current || !containerRef.current) return;
     const scrollLeft = containerRef.current.scrollLeft;
-    const index = Math.round((scrollLeft + containerWidth / 2 - config.tickWidth / 2) / config.tickWidth);
+    const index = Math.round((scrollLeft - config.tickWidth / 2) / config.tickWidth);
     const clampedIndex = Math.max(0, Math.min(values.length - 1, index));
     const newDisplayValue = values[clampedIndex] ?? config.min;
     if (newDisplayValue !== displayValue) {
