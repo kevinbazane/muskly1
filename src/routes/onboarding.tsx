@@ -159,9 +159,9 @@ function Onboarding() {
     if (step === 3) return Number(weight) > 30 && Number(height) > 100;
     if (step === 4) return targetWeightValue > 30;
     if (step === 5) return equipment.length > 0;
-    if (step === 6) return name.trim().length > 1;
-    if (step === 8) return pushups !== null;
-    if (step === 9) return selectedDays.length > 0;
+    if (step === 6) return selectedDays.length > 0;
+    if (step === 7) return name.trim().length > 1;
+    if (step === 9) return pushups !== null;
     return true;
   })();
 
