@@ -138,11 +138,12 @@ function Onboarding() {
   };
 
   const canContinue = (() => {
-    if (step === 3) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
-    if (step === 4) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 7) return pushups !== null;
-    if (step === 8) return selectedDays.length > 0;
-    if (step === 9) return Number(targetWeight) > 30;
+    if (step === 2) return Number(age) >= 12 && Number(age) < 100;
+    if (step === 3) return Number(weight) > 30 && Number(height) > 100;
+    if (step === 5) return name.trim().length > 1;
+    if (step === 8) return pushups !== null;
+    if (step === 9) return selectedDays.length > 0;
+    if (step === 10) return Number(targetWeight) > 30;
     return true;
   })();
 
