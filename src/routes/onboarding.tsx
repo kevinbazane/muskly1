@@ -90,7 +90,7 @@ function Onboarding() {
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
 
 
-  const totalSteps = 10;
+  const totalSteps = 11;
 
   const draft: Profile = {
     name: name.trim() || "Atleta",
@@ -107,11 +107,11 @@ function Onboarding() {
   };
 
   const canContinue = (() => {
-    if (step === 2) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
-    if (step === 3) return Number(weight) > 30 && Number(height) > 100;
-    if (step === 6) return pushups !== null;
-    if (step === 7) return selectedDays.length > 0;
-    if (step === 8) return Number(targetWeight) > 30;
+    if (step === 3) return name.trim().length > 1 && Number(age) >= 12 && Number(age) < 100;
+    if (step === 4) return Number(weight) > 30 && Number(height) > 100;
+    if (step === 7) return pushups !== null;
+    if (step === 8) return selectedDays.length > 0;
+    if (step === 9) return Number(targetWeight) > 30;
     return true;
   })();
 
@@ -150,7 +150,7 @@ function Onboarding() {
             style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
           />
         </div>
-        {step === 3 ? (
+        {step === 4 ? (
           <button
             onClick={() => setStep((s) => s + 1)}
             className="shrink-0 text-sm font-semibold tracking-wide text-muted-foreground"
@@ -178,7 +178,7 @@ function Onboarding() {
         )}
 
 
-        {step === 1 && (
+        {step === 2 && (
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold leading-tight">
               Construye tus músculos{" "}
@@ -226,7 +226,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -253,7 +253,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <div className="animate-fade-in space-y-8 pt-4">
             <div className="text-center">
               <h1 className="font-display text-[28px] font-bold leading-tight">
@@ -292,7 +292,7 @@ function Onboarding() {
         )}
 
 
-        {step === 4 && (
+        {step === 5 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
@@ -308,7 +308,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <Step
             title="¿Cuál es tu nivel de actividad?"
             subtitle="Así ajustamos tus calorías diarias con más precisión"
@@ -343,7 +343,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 6 && (
+        {step === 7 && (
           <Step
             title="¿Cuántas flexiones puedes hacer seguidas?"
             subtitle="Nos ayuda a calibrar tu primera rutina"
@@ -379,7 +379,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 7 && (
+        {step === 8 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
@@ -443,7 +443,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 8 && (
+        {step === 9 && (
           <Step title="¿Cuál es tu objetivo?" subtitle="Podrás cambiarlo cuando quieras">
             <div className="space-y-3">
               {goals.map((g) => (
@@ -468,7 +468,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && <NutritionInfoStep plan={computePlan(draft)} />}
+        {step === 10 && <NutritionInfoStep plan={computePlan(draft)} />}
       </main>
 
       <div className="px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
