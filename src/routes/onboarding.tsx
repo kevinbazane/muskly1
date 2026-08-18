@@ -56,6 +56,20 @@ const goals: { id: Goal; label: string; desc: string }[] = [
   { id: "definicion", label: "Definir", desc: "Mantener músculo, marcar más" },
 ];
 
+const sexOptions: { id: Sex; label: string; icon: typeof Mars }[] = [
+  { id: "hombre", label: "Hombre", icon: Mars },
+  { id: "mujer", label: "Mujer", icon: Venus },
+  { id: "otro", label: "Prefiero no decir", icon: Transgender },
+];
+
+const goalCards: { id: Goal; label: string; image: string }[] = [
+  { id: "definicion", label: "Verse mejor en atuendos", image: goalLookBetter },
+  { id: "fuerza", label: "Construir fuerza", image: goalStrength },
+  { id: "volumen", label: "Aumentar la confianza y la energía", image: goalConfidence },
+];
+
+
+
 const levels: { id: Level; label: string; desc: string }[] = [
   { id: "principiante", label: "Principiante", desc: "Menos de 6 meses entrenando" },
   { id: "intermedio", label: "Intermedio", desc: "Entre 6 meses y 2 años" },
