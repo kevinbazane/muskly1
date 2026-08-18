@@ -71,6 +71,12 @@ const goalCards: { id: Goal; label: string; image: string }[] = [
   { id: "volumen", label: "Aumentar la confianza y la energía", image: goalConfidence },
 ];
 
+const equipmentOptions: { id: string; label: string; desc: string; image: string }[] = [
+  { id: "corporal", label: "Peso corporal", desc: "Entrenamiento corporal.", image: equipBodyweight },
+  { id: "portatil", label: "Equipo portátil", desc: "mancuernas, etc.", image: equipPortable },
+  { id: "gimnasio", label: "Gimnasio", desc: "Máquina Smith, etc.", image: equipGym },
+];
+
 
 
 const levels: { id: Level; label: string; desc: string }[] = [
