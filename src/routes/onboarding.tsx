@@ -460,16 +460,20 @@ function Onboarding() {
 
 
         {step === 6 && (
-          <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
-            <Field label="Nombre">
+          <div className="animate-fade-in flex h-full flex-col">
+            <h1 className="mt-8 font-display text-[32px] font-extrabold leading-tight tracking-tight">
+              ¿Cómo deberíamos llamarte?
+            </h1>
+            <div className="flex flex-1 flex-col items-center justify-center">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Kevin"
-                className="input-muskly"
+                placeholder="Nombre"
+                autoFocus
+                className="w-full bg-transparent text-center font-display text-[28px] font-semibold text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
               />
-            </Field>
-          </Step>
+            </div>
+          </div>
         )}
 
 
