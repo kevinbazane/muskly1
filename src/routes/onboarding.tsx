@@ -105,7 +105,7 @@ function Onboarding() {
   const { setProfile } = useProfile();
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState("30");
   const [sex, setSex] = useState<Sex>("hombre");
   const [weight, setWeight] = useState("63");
   const [height, setHeight] = useState("168");
