@@ -902,6 +902,8 @@ function RulerSelector({
   unit,
   onUnitChange,
   options,
+  minBase,
+  maxBase,
 }: {
   label: string;
   value: number;
@@ -909,11 +911,26 @@ function RulerSelector({
   unit: string;
   onUnitChange: (unit: string) => void;
   options: { key: string; label: string }[];
+  minBase?: number;
+  maxBase?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isProgrammaticScroll = useRef(false);
   const [containerWidth, setContainerWidth] = useState(0);
-  const config = unitConfig[unit]!;
+  const baseConfig = unitConfig[unit]!;
+  const config = useMemo(() => {
+    let min = baseConfig.min;
+    let max = baseConfig.max;
+    if (minBase != null) {
+      min = Math.max(min, Math.ceil(fromBase(minBase, unit) / baseConfig.step) * baseConfig.step);
+    }
+    if (maxBase != null) {
+      max = Math.min(max, Math.floor(fromBase(maxBase, unit) / baseConfig.step) * baseConfig.step);
+    }
+    if (max < min) max = min;
+    return { ...baseConfig, min, max };
+  }, [baseConfig, minBase, maxBase, unit]);
+
 
   const values = useMemo(() => {
     const arr: number[] = [];
