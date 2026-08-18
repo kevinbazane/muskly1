@@ -377,7 +377,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 5 && (
           <Step title="¿Cómo te llamamos?" subtitle="Para saludarte cada mañana">
             <Field label="Nombre">
               <input
@@ -392,7 +392,7 @@ function Onboarding() {
 
 
 
-        {step === 5 && (
+        {step === 6 && (
           <Step title="Tu experiencia" subtitle="Ajustamos el volumen de entrenamiento">
             <div className="space-y-3">
               {levels.map((l) => (
