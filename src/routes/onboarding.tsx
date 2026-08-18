@@ -550,7 +550,7 @@ function Onboarding() {
           </Step>
         )}
 
-        {step === 9 && (
+        {step === 6 && (
           <Step
             title="¡Elige los días de entrenamiento!"
             subtitle={`¡Genial! Según tus datos, te recomendamos ${daysPerWeek} entrenamientos por semana.`}
